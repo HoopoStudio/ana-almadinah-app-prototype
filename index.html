@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#efece6;font-family:Tajawal,system-ui,sans-serif}
+a{color:#522D8F;text-decoration:none}a:hover{color:#3A1D63}
+.am-carousel{scrollbar-width:none}
+.am-carousel::-webkit-scrollbar{display:none}
+body.bare .hdr{display:none}body.bare .pg{padding:0!important;gap:0!important;align-items:flex-start!important}
+</style>
+<script>if(location.search.includes("bare=1"))document.addEventListener("DOMContentLoaded",()=>document.body.classList.add("bare"));</script>
+</helmet>
+<div class="pg" style="padding:40px 48px 64px;display:flex;flex-direction:column;gap:28px;align-items:center">
+  <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="428,908">
+    <div dir="rtl" style="height:812px;background:#faf8fc;font-family:Tajawal,sans-serif;display:flex;flex-direction:column;overflow:hidden;position:relative">
+
+      <!-- LOGIN -->
+      <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+        <div style="height:100%;position:relative;overflow:hidden;background:#2b1548;display:flex;flex-direction:column">
+          <img src="./uploads/IMG_Night.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.55">
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(43,21,72,0.25) 0%,rgba(43,21,72,0.55) 45%,#2b1548 78%)"></div>
+          <div style="position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-top:40px">
+            <img src="./assets/anaalmadinah-logo-white.svg" alt="أنا المدينة" style="width:230px">
+            <div style="font:500 15px Tajawal,sans-serif;color:rgba(255,255,255,0.75)">عِش السيرة النبوية بتقنية الواقع الافتراضي</div>
+          </div>
+          <div style="position:relative;background:#ffffff;border-radius:28px 28px 0 0;padding:28px 24px 30px;display:flex;flex-direction:column;gap:14px">
+            <div style="font:700 22px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">مرحباً بك</div>
+            <div style="display:flex;align-items:center;gap:10px;border:1.5px solid #e4dfec;border-radius:14px;padding:14px 16px">
+              <span style="font:500 15px Tajawal,sans-serif;color:#8a8194">+966</span>
+              <span style="width:1px;height:18px;background:#e4dfec"></span>
+              <span style="font:500 15px Tajawal,sans-serif;color:#b5aec0">رقم الجوال</span>
+            </div>
+            <div onClick="{{ goHome }}" style="background:#FFCC00;border-radius:14px;padding:15px;text-align:center;font:800 16px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">تسجيل الدخول</div>
+            <div onClick="{{ goRegister }}" style="border:1.5px solid #522D8F;border-radius:14px;padding:14px;text-align:center;font:700 15px Tajawal,sans-serif;color:#522D8F;cursor:pointer">إنشاء حساب جديد</div>
+            <div onClick="{{ goHome }}" style="text-align:center;font:500 13px Tajawal,sans-serif;color:#8a8194;cursor:pointer">الدخول كزائر</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- REGISTER -->
+      <sc-if value="{{ isRegister }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 4px">
+            <div onClick="{{ goLogin }}" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #eee9f3;display:flex;align-items:center;justify-content:center;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#2b1a45" stroke-width="2.5" stroke-linecap="round"></path></svg>
+            </div>
+            <span style="font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">إنشاء حساب جديد</span>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:14px;padding:20px 20px 0">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">الاسم الكامل</span>
+              <div style="border:1.5px solid #e4dfec;border-radius:14px;padding:14px 16px;font:500 14px Tajawal,sans-serif;color:#b5aec0">مثال: سارة أحمد</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">رقم الجوال</span>
+              <div style="display:flex;align-items:center;gap:10px;border:1.5px solid #e4dfec;border-radius:14px;padding:14px 16px">
+                <span style="font:500 14px Tajawal,sans-serif;color:#8a8194">+966</span>
+                <span style="width:1px;height:16px;background:#e4dfec"></span>
+                <span style="font:500 14px Tajawal,sans-serif;color:#b5aec0">5xx xxx xxx</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">البريد الإلكتروني (اختياري)</span>
+              <div style="border:1.5px solid #e4dfec;border-radius:14px;padding:14px 16px;font:500 14px Tajawal,sans-serif;color:#b5aec0">name@email.com</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:10px;padding-top:6px">
+              <div style="width:20px;height:20px;border-radius:6px;border:1.5px solid #522D8F;background:#522D8F;flex:none;display:flex;align-items:center;justify-content:center">
+                <svg width="12" height="12" viewBox="0 0 24 24"><path d="M4 12l5 5 11-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"></path></svg>
+              </div>
+              <span style="font:400 12px/1.6 Tajawal,sans-serif;color:#6b6376">أوافق على الشروط والأحكام وسياسة الخصوصية</span>
+            </div>
+          </div>
+          <div style="flex:none;padding:16px 20px 28px;display:flex;flex-direction:column;gap:10px">
+            <div onClick="{{ goHome }}" style="background:#FFCC00;border-radius:14px;padding:15px;text-align:center;font:800 16px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">متابعة</div>
+            <div onClick="{{ goLogin }}" style="text-align:center;font:500 13px Tajawal,sans-serif;color:#8a8194;cursor:pointer">لديك حساب؟ <span style="color:#522D8F;font-weight:700">تسجيل الدخول</span></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- HOME -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px 6px">
+            <img src="./assets/anaalmadinah-logo-purple.svg" alt="أنا المدينة" style="width:120px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div onClick="{{ goWallet }}" style="display:flex;align-items:center;gap:6px;background:#FFF3C2;border-radius:100px;padding:7px 12px;cursor:pointer">
+                <svg width="14" height="14" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2l-6.1 3.4 1.4-6.8L2.2 9.1l6.9-.8z" fill="#c79a00"></path></svg>
+                <span style="font:800 13px Tajawal,sans-serif;color:#7a5f00">{{ balance }} نقطة</span>
+              </div>
+              <div onClick="{{ goProfile }}" style="width:38px;height:38px;border-radius:50%;background:#522D8F;color:#fff;display:flex;align-items:center;justify-content:center;font:700 15px Tajawal,sans-serif;cursor:pointer">س</div>
+            </div>
+          </div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:18px;padding-top:10px">
+            <div style="padding:0 20px;display:flex;align-items:baseline;justify-content:space-between">
+              <span style="font:700 19px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">تجارب مميزة</span>
+              <span style="font:500 13px Tajawal,sans-serif;color:#522D8F">عرض الكل</span>
+            </div>
+            <div class="am-carousel" ref="{{ carouselRef }}" onPointerDown="{{ onCarouselDown }}" onPointerMove="{{ onCarouselMove }}" onPointerUp="{{ onCarouselUp }}" onPointerLeave="{{ onCarouselLeave }}" style="display:flex;gap:14px;padding:0 20px;overflow-x:auto;scroll-snap-type:x proximity;cursor:{{ carouselCursor }};user-select:none">
+              <div onClick="{{ selectGharHira }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_GharHira.jpg" alt="غار حراء" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">غار حراء</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">١٥ دقيقة</div>
+                </div>
+              </div>
+              <div onClick="{{ selectHijra }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_HijraWay.jpg" alt="طريق الهجرة" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">طريق الهجرة</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">٢٠ دقيقة</div>
+                </div>
+              </div>
+              <div onClick="{{ selectDesert }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_Desert.jpg" alt="رحلة الصحراء" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">رحلة الصحراء</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">١٨ دقيقة</div>
+                </div>
+              </div>
+              <div onClick="{{ selectTent }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_Tent.jpg" alt="مضارب البادية" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">مضارب البادية</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">١٢ دقيقة</div>
+                </div>
+              </div>
+              <div onClick="{{ selectShip }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_Ship.jpg" alt="رحلة السفينة" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">رحلة السفينة</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">٢٢ دقيقة</div>
+                </div>
+              </div>
+              <div onClick="{{ selectNadwa }}" style="flex:none;width:250px;border-radius:20px;overflow:hidden;position:relative;box-shadow:0 8px 24px rgba(43,26,69,0.18);cursor:pointer;scroll-snap-align:start">
+                <img src="./uploads/IMG_DarAlnadwa.jpg" alt="دار الندوة" draggable="false" style="width:250px;height:320px;object-fit:cover;display:block;pointer-events:none">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 40%,rgba(20,8,40,0.85) 100%)"></div>
+                <div style="position:absolute;top:12px;right:12px;background:#FFCC00;border-radius:8px;padding:4px 9px;font:800 11px Tajawal,sans-serif;color:#2b1a45">VR 360°</div>
+                <div style="position:absolute;bottom:0;right:0;left:0;padding:16px;display:flex;flex-direction:column;gap:4px">
+                  <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">دار الندوة</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.8)">١٦ دقيقة</div>
+                </div>
+              </div>
+            </div>
+            <div style="padding:0 20px;font:700 19px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">أقرب المواقع</div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding:0 20px">
+              <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #eee9f3;border-radius:16px;padding:12px 14px">
+                <div style="width:44px;height:44px;border-radius:12px;background:#F0EAF9;display:flex;align-items:center;justify-content:center;flex:none">
+                  <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="#522D8F"></path></svg>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                  <div style="font:700 15px Tajawal,sans-serif;color:#2b1a45">المدينة المنورة — واجهة قباء</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:#8a8194">١٫٢ كم · مفتوح حتى ١١ م</div>
+                </div>
+                <div onClick="{{ goBooking }}" style="background:#522D8F;border-radius:100px;padding:8px 16px;font:700 13px Tajawal,sans-serif;color:#fff;cursor:pointer">احجز</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #eee9f3;border-radius:16px;padding:12px 14px">
+                <div style="width:44px;height:44px;border-radius:12px;background:#F0EAF9;display:flex;align-items:center;justify-content:center;flex:none">
+                  <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z" fill="#522D8F"></path></svg>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+                  <div style="font:700 15px Tajawal,sans-serif;color:#2b1a45">المدينة المنورة — النور مول</div>
+                  <div style="font:400 12px Tajawal,sans-serif;color:#8a8194">٣٫٨ كم · مفتوح حتى ١٢ م</div>
+                </div>
+                <div onClick="{{ goBooking }}" style="border:1.5px solid #522D8F;border-radius:100px;padding:7px 15px;font:700 13px Tajawal,sans-serif;color:#522D8F;cursor:pointer">احجز</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;background:#fff;border-top:1px solid #eee9f3;padding:10px 8px 8px">
+            <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z" fill="none" stroke="{{ navHomeColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navHomeWeight }} 11px Tajawal,sans-serif;color:{{ navHomeColor }}">الرئيسية</span>
+            </div>
+            <div onClick="{{ goTickets }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="{{ navTicketsColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navTicketsWeight }} 11px Tajawal,sans-serif;color:{{ navTicketsColor }}">تذاكري</span>
+            </div>
+            <div onClick="{{ goWallet }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="{{ navWalletColor }}" stroke-width="2"></rect><path d="M15 12h4" stroke="{{ navWalletColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navWalletWeight }} 11px Tajawal,sans-serif;color:{{ navWalletColor }}">المحفظة</span>
+            </div>
+            <div onClick="{{ goStore }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11zM8 8a4 4 0 0 1 8 0" fill="none" stroke="{{ navStoreColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navStoreWeight }} 11px Tajawal,sans-serif;color:{{ navStoreColor }}">المتجر</span>
+            </div>
+            <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></circle><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navProfileWeight }} 11px Tajawal,sans-serif;color:{{ navProfileColor }}">حسابي</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- BOOKING -->
+      <sc-if value="{{ isBooking }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column;overflow:hidden">
+          <div style="position:relative;height:250px;flex:none">
+            <sc-if value="{{ isExpHijra }}" hint-placeholder-val="{{ true }}"><img src="./uploads/IMG_HijraWay.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{ isExpGharHira }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_GharHira.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{ isExpDesert }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Desert.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{ isExpTent }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Tent.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{ isExpShip }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Ship.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <sc-if value="{{ isExpNadwa }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_DarAlnadwa.jpg" alt="{{ expTitle }}" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0.1) 30%,rgba(250,248,252,1) 100%)"></div>
+            <div onClick="{{ goHome }}" style="position:absolute;top:14px;right:14px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer">
+              <svg width="18" height="18" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#2b1a45" stroke-width="2.5" stroke-linecap="round"></path></svg>
+            </div>
+            <div style="position:absolute;bottom:8px;right:20px;left:20px;display:flex;flex-direction:column;gap:6px">
+              <div style="font:700 26px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">{{ expTitle }}</div>
+              <div style="display:flex;gap:8px">
+                <span style="background:#fff;border:1px solid #eee9f3;border-radius:100px;padding:4px 11px;font:700 11px Tajawal,sans-serif;color:#522D8F">VR 360°</span>
+                <span style="background:#fff;border:1px solid #eee9f3;border-radius:100px;padding:4px 11px;font:500 11px Tajawal,sans-serif;color:#6b6376">{{ expDuration }}</span>
+                <span style="background:#fff;border:1px solid #eee9f3;border-radius:100px;padding:4px 11px;font:500 11px Tajawal,sans-serif;color:#6b6376">{{ expTag }}</span>
+              </div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:14px 20px 0;overflow:hidden">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:700 15px Tajawal,sans-serif;color:#2b1a45">الموقع</div>
+              <div style="display:flex;gap:8px">
+                <span style="background:#522D8F;border-radius:100px;padding:8px 15px;font:700 13px Tajawal,sans-serif;color:#fff">واجهة قباء</span>
+                <span style="background:#fff;border:1.5px solid #e4dfec;border-radius:100px;padding:8px 15px;font:500 13px Tajawal,sans-serif;color:#6b6376">النور مول</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:700 15px Tajawal,sans-serif;color:#2b1a45">اليوم</div>
+              <div style="display:flex;gap:8px">
+                <div onClick="{{ pickDate19 }}" style="flex:1;background:{{ date19Bg }};border:1.5px solid {{ date19Border }};border-radius:14px;padding:10px 0;text-align:center;color:{{ date19Color }};cursor:pointer"><div style="font:500 11px Tajawal,sans-serif;opacity:0.8">اليوم</div><div style="font:800 16px Tajawal,sans-serif">19</div></div>
+                <div onClick="{{ pickDate20 }}" style="flex:1;background:{{ date20Bg }};border:1.5px solid {{ date20Border }};border-radius:14px;padding:10px 0;text-align:center;color:{{ date20Color }};cursor:pointer"><div style="font:500 11px Tajawal,sans-serif">الخميس</div><div style="font:800 16px Tajawal,sans-serif">20</div></div>
+                <div onClick="{{ pickDate21 }}" style="flex:1;background:{{ date21Bg }};border:1.5px solid {{ date21Border }};border-radius:14px;padding:10px 0;text-align:center;color:{{ date21Color }};cursor:pointer"><div style="font:500 11px Tajawal,sans-serif">الجمعة</div><div style="font:800 16px Tajawal,sans-serif">21</div></div>
+                <div onClick="{{ pickDate22 }}" style="flex:1;background:{{ date22Bg }};border:1.5px solid {{ date22Border }};border-radius:14px;padding:10px 0;text-align:center;color:{{ date22Color }};cursor:pointer"><div style="font:500 11px Tajawal,sans-serif">السبت</div><div style="font:800 16px Tajawal,sans-serif">22</div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:700 15px Tajawal,sans-serif;color:#2b1a45">الوقت</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px">
+                <span style="background:#fff;border:1.5px solid #e4dfec;border-radius:100px;padding:8px 16px;font:500 13px Tajawal,sans-serif;color:#b5aec0;text-decoration:line-through">4:00 م</span>
+                <span onClick="{{ pickTime530 }}" style="background:{{ time530Bg }};border:1.5px solid #e4dfec;border-radius:100px;padding:8px 16px;font:{{ time530Weight }} 13px Tajawal,sans-serif;color:{{ time530Color }};cursor:pointer">5:30 م</span>
+                <span onClick="{{ pickTime700 }}" style="background:{{ time700Bg }};border:1.5px solid #e4dfec;border-radius:100px;padding:8px 16px;font:{{ time700Weight }} 13px Tajawal,sans-serif;color:{{ time700Color }};cursor:pointer">7:00 م</span>
+                <span onClick="{{ pickTime830 }}" style="background:{{ time830Bg }};border:1.5px solid #e4dfec;border-radius:100px;padding:8px 16px;font:{{ time830Weight }} 13px Tajawal,sans-serif;color:{{ time830Color }};cursor:pointer">8:30 م</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #eee9f3;border-radius:16px;padding:12px 16px">
+              <span style="font:700 15px Tajawal,sans-serif;color:#2b1a45">عدد التذاكر</span>
+              <div style="display:flex;align-items:center;gap:14px">
+                <div onClick="{{ decQty }}" style="width:32px;height:32px;border-radius:50%;border:1.5px solid #e4dfec;display:flex;align-items:center;justify-content:center;font:700 18px Tajawal,sans-serif;color:#6b6376;cursor:pointer">−</div>
+                <span style="font:800 17px Tajawal,sans-serif;color:#2b1a45">{{ ticketQty }}</span>
+                <div onClick="{{ incQty }}" style="width:32px;height:32px;border-radius:50%;background:#522D8F;display:flex;align-items:center;justify-content:center;font:700 18px Tajawal,sans-serif;color:#fff;cursor:pointer">+</div>
+              </div>
+            </div>
+          </div>
+          <div style="flex:none;display:flex;align-items:center;gap:14px;background:#fff;border-top:1px solid #eee9f3;padding:14px 20px">
+            <div style="display:flex;flex-direction:column">
+              <span style="font:400 11px Tajawal,sans-serif;color:#8a8194">الإجمالي</span>
+              <span style="font:800 19px Tajawal,sans-serif;color:#2b1a45">{{ total }} نقطة</span>
+            </div>
+            <div onClick="{{ confirmBooking }}" style="flex:1;background:#FFCC00;border-radius:14px;padding:15px;text-align:center;font:800 15px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">تأكيد الحجز</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- TICKET / QR -->
+      <sc-if value="{{ isTicket }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;display:flex;flex-direction:column;align-items:center;gap:18px;padding:30px 24px;background:linear-gradient(180deg,#522D8F 0%,#3A1D63 100%);overflow:auto;position:relative">
+          <div onClick="{{ goHome }}" style="position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></path></svg>
+          </div>
+          <div style="width:56px;height:56px;border-radius:50%;background:#FFCC00;display:flex;align-items:center;justify-content:center">
+            <svg width="26" height="26" viewBox="0 0 24 24"><path d="M4 12l5 5 11-11" fill="none" stroke="#2b1a45" stroke-width="3" stroke-linecap="round"></path></svg>
+          </div>
+          <div style="font:700 22px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">تم تأكيد حجزك!</div>
+          <div style="width:100%;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,0.3)">
+            <div style="position:relative;height:110px">
+              <sc-if value="{{ isExpHijra }}" hint-placeholder-val="{{ true }}"><img src="./uploads/IMG_HijraWay.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ isExpGharHira }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_GharHira.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ isExpDesert }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Desert.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ isExpTent }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Tent.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ isExpShip }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_Ship.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <sc-if value="{{ isExpNadwa }}" hint-placeholder-val="{{ false }}"><img src="./uploads/IMG_DarAlnadwa.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></sc-if>
+              <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 20%,rgba(20,8,40,0.7) 100%)"></div>
+              <div style="position:absolute;bottom:10px;right:16px;font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">{{ expTitle }}</div>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:14px 18px;border-bottom:1.5px dashed #e4dfec">
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font:400 11px Tajawal,sans-serif;color:#8a8194">الموقع</span><span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">واجهة قباء</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font:400 11px Tajawal,sans-serif;color:#8a8194">التذاكر</span><span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">{{ ticketQty }}</span></div>
+              <div style="display:flex;flex-direction:column;gap:2px"><span style="font:400 11px Tajawal,sans-serif;color:#8a8194">الحالة</span><span style="display:flex;align-items:center;gap:4px;font:700 13px Tajawal,sans-serif;color:#1f9d55"><span style="width:6px;height:6px;border-radius:50%;background:#1f9d55"></span>متاحة</span></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px">
+              <svg width="150" height="150" viewBox="0 0 29 29" style="border-radius:8px">
+                <rect width="29" height="29" fill="#fff"></rect>
+                <path d="M1 1h7v7H1zM21 1h7v7h-7zM1 21h7v7H1z" fill="#2b1a45"></path>
+                <path d="M3 3h3v3H3zM23 3h3v3h-3zM3 23h3v3H3z" fill="#fff"></path>
+                <path d="M4 4h1v1H4zM24 4h1v1h-1zM4 24h1v1H4zM10 1h1v2h-1zM13 1h2v1h-2zM16 2h1v2h-1zM10 4h2v1h-2zM14 4h1v3h-1zM17 5h2v1h-2zM10 7h1v2h-1zM12 8h2v1h-2zM16 8h1v1h-1zM1 10h2v1H1zM4 10h1v2H4zM7 10h2v1H7zM10 10h1v1h-1zM13 10h1v2h-1zM16 10h2v1h-2zM20 10h1v2h-1zM23 10h2v1h-2zM27 10h1v2h-1zM2 13h1v1H2zM5 13h2v1H5zM9 13h1v2H9zM12 13h1v1h-1zM15 13h2v2h-2zM19 13h1v1h-1zM22 13h2v1h-2zM26 13h1v1h-1zM1 16h1v2H1zM4 16h1v1H4zM7 16h2v1H7zM11 16h1v1h-1zM14 16h1v2h-1zM18 16h2v1h-2zM22 16h1v2h-1zM25 16h2v1h-2zM10 19h2v1h-2zM13 19h1v1h-1zM16 19h1v2h-1zM19 19h2v2h-2zM24 19h1v1h-1zM27 19h1v2h-1zM10 21h1v2h-1zM13 22h2v1h-2zM17 22h1v1h-1zM21 22h2v1h-2zM25 22h1v2h-1zM10 25h1v2h-1zM12 26h2v1h-2zM15 25h2v1h-2zM19 25h1v2h-1zM22 26h2v1h-2zM26 26h2v1h-2z" fill="#2b1a45"></path>
+              </svg>
+              <div style="font:500 12px Tajawal,sans-serif;color:#8a8194">أبرز الرمز عند بوابة الدخول</div>
+            </div>
+          </div>
+          <div onClick="{{ goHome }}" style="width:100%;background:#FFCC00;border-radius:14px;padding:13px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">تم</div>
+        </div>
+      </sc-if>
+
+      <!-- TICKETS LIST -->
+      <sc-if value="{{ isTickets }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="padding:16px 20px 4px;font:700 22px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">تذاكري</div>
+          <div style="display:flex;background:#F0EAF9;border-radius:100px;padding:4px;margin:14px 20px 0">
+            <span onClick="{{ setTicketsUpcoming }}" style="flex:1;text-align:center;background:{{ tabUpcomingBg }};box-shadow:{{ tabUpcomingShadow }};border-radius:100px;padding:8px 0;font:{{ tabUpcomingWeight }} 13px Tajawal,sans-serif;color:{{ tabUpcomingColor }};cursor:pointer;transition:all .2s">متاحة</span>
+            <span onClick="{{ setTicketsPast }}" style="flex:1;text-align:center;background:{{ tabPastBg }};box-shadow:{{ tabPastShadow }};border-radius:100px;padding:8px 0;font:{{ tabPastWeight }} 13px Tajawal,sans-serif;color:{{ tabPastColor }};cursor:pointer;transition:all .2s">غير متاحة</span>
+          </div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:14px;padding:16px 20px 0">
+          <sc-if value="{{ isTicketsUpcoming }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(43,26,69,0.08)">
+              <div style="position:relative;height:96px">
+                <img src="./uploads/IMG_HijraWay.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 30%,rgba(20,8,40,0.75) 100%)"></div>
+                <div style="position:absolute;bottom:10px;right:16px;font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">طريق الهجرة</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">واجهة قباء</span>
+                    <span style="display:flex;align-items:center;gap:4px;background:#E8F7EE;border-radius:100px;padding:2px 9px"><span style="width:6px;height:6px;border-radius:50%;background:#1f9d55"></span><span style="font:800 10px Tajawal,sans-serif;color:#1f9d55">متاحة</span></span>
+                  </div>
+                  <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">تذكرتان</span>
+                </div>
+                <span onClick="{{ goTicket }}" style="border:1.5px solid #522D8F;border-radius:100px;padding:7px 16px;font:700 12px Tajawal,sans-serif;color:#522D8F;cursor:pointer">عرض QR</span>
+              </div>
+            </div>
+            <div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(43,26,69,0.08)">
+              <div style="position:relative;height:96px">
+                <img src="./uploads/IMG_GharHira.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 30%,rgba(20,8,40,0.75) 100%)"></div>
+                <div style="position:absolute;bottom:10px;right:16px;font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">غار حراء</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">النور مول</span>
+                    <span style="display:flex;align-items:center;gap:4px;background:#E8F7EE;border-radius:100px;padding:2px 9px"><span style="width:6px;height:6px;border-radius:50%;background:#1f9d55"></span><span style="font:800 10px Tajawal,sans-serif;color:#1f9d55">متاحة</span></span>
+                  </div>
+                  <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">تذكرة واحدة</span>
+                </div>
+                <span onClick="{{ goTicket }}" style="border:1.5px solid #522D8F;border-radius:100px;padding:7px 16px;font:700 12px Tajawal,sans-serif;color:#522D8F;cursor:pointer">عرض QR</span>
+              </div>
+            </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isTicketsPast }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 6px 18px rgba(43,26,69,0.08);opacity:0.6">
+              <div style="position:relative;height:96px">
+                <img src="./uploads/IMG_Ship.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(0.5)">
+                <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,8,40,0) 30%,rgba(20,8,40,0.75) 100%)"></div>
+                <div style="position:absolute;bottom:10px;right:16px;font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">رحلة السفينة</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">واجهة قباء</span>
+                    <span style="display:flex;align-items:center;gap:4px;background:#f2eff7;border-radius:100px;padding:2px 9px"><span style="width:6px;height:6px;border-radius:50%;background:#8a8194"></span><span style="font:800 10px Tajawal,sans-serif;color:#6b6376">غير متاحة</span></span>
+                  </div>
+                  <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">تذكرة واحدة</span>
+                </div>
+                <span style="border:1.5px solid #e4dfec;border-radius:100px;padding:7px 16px;font:700 12px Tajawal,sans-serif;color:#b5aec0">غير متاحة</span>
+              </div>
+            </div>
+          </sc-if>
+          </div>
+          <div style="display:flex;background:#fff;border-top:1px solid #eee9f3;padding:10px 8px 8px">
+            <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z" fill="none" stroke="{{ navHomeColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navHomeWeight }} 11px Tajawal,sans-serif;color:{{ navHomeColor }}">الرئيسية</span>
+            </div>
+            <div onClick="{{ goTickets }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="{{ navTicketsColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navTicketsWeight }} 11px Tajawal,sans-serif;color:{{ navTicketsColor }}">تذاكري</span>
+            </div>
+            <div onClick="{{ goWallet }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="{{ navWalletColor }}" stroke-width="2"></rect><path d="M15 12h4" stroke="{{ navWalletColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navWalletWeight }} 11px Tajawal,sans-serif;color:{{ navWalletColor }}">المحفظة</span>
+            </div>
+            <div onClick="{{ goStore }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11zM8 8a4 4 0 0 1 8 0" fill="none" stroke="{{ navStoreColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navStoreWeight }} 11px Tajawal,sans-serif;color:{{ navStoreColor }}">المتجر</span>
+            </div>
+            <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></circle><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navProfileWeight }} 11px Tajawal,sans-serif;color:{{ navProfileColor }}">حسابي</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- WALLET -->
+      <sc-if value="{{ isWallet }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="padding:14px 20px 0;font:700 22px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">المحفظة</div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:16px;padding:14px 20px 0">
+            <div style="background:linear-gradient(135deg,#522D8F 0%,#3A1D63 100%);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 10px 30px rgba(58,29,99,0.35)">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font:500 13px Tajawal,sans-serif;color:rgba(255,255,255,0.7)">رصيدك الحالي</span>
+                <img src="./assets/anaalmadinah-logo-white.svg" alt="" style="height:22px;opacity:0.85">
+              </div>
+              <div style="display:flex;align-items:baseline;gap:8px">
+                <span style="font:800 40px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff;line-height:1">{{ balance }}</span>
+                <span style="font:700 16px Tajawal,sans-serif;color:#FFCC00">نقطة</span>
+              </div>
+              <div style="display:flex;gap:10px">
+                <div onClick="{{ goPackages }}" style="flex:1;background:#FFCC00;border-radius:12px;padding:11px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">أضف رصيد</div>
+                <div style="flex:1;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.35);border-radius:12px;padding:11px;text-align:center;font:700 14px Tajawal,sans-serif;color:#fff;opacity:0.6">أهدِ نقاط (قريباً)</div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between">
+                <span style="font:700 15px Tajawal,sans-serif;color:#2b1a45">أفلام واسيج 360°</span>
+                <span style="font:500 12px Tajawal,sans-serif;color:#8a8194">مشاهدة واحدة = فيلم واحد</span>
+              </div>
+              <div style="background:#2b1a45;border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font:500 12px Tajawal,sans-serif;color:rgba(255,255,255,0.65)">رصيد المشاهدات</span>
+                  <sc-if value="{{ creditsLow }}" hint-placeholder-val="{{ false }}">
+                    <span style="background:#c0405c;border-radius:100px;padding:3px 10px;font:800 10px Tajawal,sans-serif;color:#fff">رصيد منخفض</span>
+                  </sc-if>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <div style="display:flex;align-items:baseline;gap:6px">
+                    <span style="font:800 34px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff;line-height:1">{{ credits }}</span>
+                    <span style="font:700 14px Tajawal,sans-serif;color:#FFCC00">نقطة</span>
+                  </div>
+                  <span style="font:400 12px Tajawal,sans-serif;color:rgba(255,255,255,0.6)">≈ {{ creditsViews }} مشاهدة (بحد أقصى ٧ نقاط للفيلم)</span>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <div onClick="{{ goPackages }}" style="flex:1;background:#FFCC00;border-radius:12px;padding:11px;text-align:center;font:800 13px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">اشحن الآن</div>
+                  <div onClick="{{ goRedeem }}" style="flex:1;background:rgba(255,255,255,0.12);border:1.5px solid rgba(255,255,255,0.35);border-radius:12px;padding:11px;text-align:center;font:700 13px Tajawal,sans-serif;color:#fff;cursor:pointer">لديّ بطاقة شحن</div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between">
+                <span style="font:700 15px Tajawal,sans-serif;color:#2b1a45">من المتجر</span>
+                <span onClick="{{ goStore }}" style="font:500 12px Tajawal,sans-serif;color:#522D8F;cursor:pointer">عرض الكل</span>
+              </div>
+              <div style="display:flex;gap:10px">
+                <div onClick="{{ goStore }}" style="flex:1;background:#fff;border:1px solid #eee9f3;border-radius:16px;overflow:hidden;cursor:pointer">
+                  <img src="./uploads/IMG_Tent.jpg" alt="" style="width:100%;height:72px;object-fit:cover;display:block">
+                  <div style="padding:9px 12px;display:flex;flex-direction:column;gap:1px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">كتاب السيرة المصور</span>
+                    <span style="font:500 11px Tajawal,sans-serif;color:#8a8194">45 نقطة</span>
+                  </div>
+                </div>
+                <div onClick="{{ goStore }}" style="flex:1;background:#fff;border:1px solid #eee9f3;border-radius:16px;overflow:hidden;cursor:pointer">
+                  <img src="./uploads/IMG_Ship.jpg" alt="" style="width:100%;height:72px;object-fit:cover;display:block">
+                  <div style="padding:9px 12px;display:flex;flex-direction:column;gap:1px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">بطاقة إهداء تجربة</span>
+                    <span style="font:500 11px Tajawal,sans-serif;color:#8a8194">60 نقطة</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;background:#fff;border-top:1px solid #eee9f3;padding:10px 8px 8px">
+            <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z" fill="none" stroke="{{ navHomeColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navHomeWeight }} 11px Tajawal,sans-serif;color:{{ navHomeColor }}">الرئيسية</span>
+            </div>
+            <div onClick="{{ goTickets }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="{{ navTicketsColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navTicketsWeight }} 11px Tajawal,sans-serif;color:{{ navTicketsColor }}">تذاكري</span>
+            </div>
+            <div onClick="{{ goWallet }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="{{ navWalletColor }}" stroke-width="2"></rect><path d="M15 12h4" stroke="{{ navWalletColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navWalletWeight }} 11px Tajawal,sans-serif;color:{{ navWalletColor }}">المحفظة</span>
+            </div>
+            <div onClick="{{ goStore }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11zM8 8a4 4 0 0 1 8 0" fill="none" stroke="{{ navStoreColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navStoreWeight }} 11px Tajawal,sans-serif;color:{{ navStoreColor }}">المتجر</span>
+            </div>
+            <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></circle><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navProfileWeight }} 11px Tajawal,sans-serif;color:{{ navProfileColor }}">حسابي</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- PACKAGES -->
+      <sc-if value="{{ isPackages }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 4px">
+            <div onClick="{{ goWallet }}" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #eee9f3;display:flex;align-items:center;justify-content:center;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#2b1a45" stroke-width="2.5" stroke-linecap="round"></path></svg>
+            </div>
+            <span style="font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">باقات واسيج</span>
+          </div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:12px;padding:16px 20px 0">
+            <div onClick="{{ chooseHeadset }}" style="display:flex;flex-direction:column;gap:12px;background:#fff;border:2px solid #522D8F;border-radius:20px;padding:16px;cursor:pointer">
+              <div style="display:flex;align-items:center;gap:12px">
+                <img src="./assets/quest3s-headset.png" alt="Meta Quest 3S" style="width:72px;height:72px;object-fit:contain;flex:none;background:#F0EAF9;border-radius:14px">
+                <div style="display:flex;flex-direction:column;gap:2px">
+                  <span style="font:700 16px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">عرض سماعة Meta Quest 3S</span>
+                  <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">يشمل ١٠٠ مشاهدة مجانية (٧٠٠ نقطة)</span>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font:800 18px Tajawal,sans-serif;color:#522D8F">2,500 ر.س</span>
+                <span style="background:#522D8F;border-radius:100px;padding:6px 16px;font:700 12px Tajawal,sans-serif;color:#fff">شراء</span>
+              </div>
+              <span style="font:400 10px/1.5 Tajawal,sans-serif;color:#b5aec0">العرض الحالي على الموقع العام؛ السعر قابل للتحديث</span>
+            </div>
+
+            <div style="font:700 13px Tajawal,sans-serif;color:#8a8194;padding-top:4px">باقات النقاط (داخلية، غير معلنة حالياً على الموقع)</div>
+
+            <div onClick="{{ chooseBronze }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:18px;padding:16px;cursor:pointer">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <span style="font:700 16px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">البرونزية</span>
+                <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">10 نقطة + 10 هدية = 20 نقطة (≈2 مشاهدة)</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <span style="font:800 16px Tajawal,sans-serif;color:#2b1a45">100 ر.س</span>
+                <span style="background:#F0EAF9;border-radius:100px;padding:5px 14px;font:700 11px Tajawal,sans-serif;color:#522D8F">شراء</span>
+              </div>
+            </div>
+            <div onClick="{{ chooseSilver }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:18px;padding:16px;cursor:pointer">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <span style="font:700 16px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الفضية</span>
+                <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">20 نقطة + 40 هدية = 60 نقطة (≈8 مشاهدة)</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <span style="font:800 16px Tajawal,sans-serif;color:#2b1a45">250 ر.س</span>
+                <span style="background:#F0EAF9;border-radius:100px;padding:5px 14px;font:700 11px Tajawal,sans-serif;color:#522D8F">شراء</span>
+              </div>
+            </div>
+            <div onClick="{{ chooseGold }}" style="position:relative;display:flex;align-items:center;justify-content:space-between;background:#fff;border:2px solid #522D8F;border-radius:18px;padding:16px;cursor:pointer">
+              <div style="position:absolute;top:-9px;right:16px;background:#FFCC00;border-radius:100px;padding:2px 10px;font:800 10px Tajawal,sans-serif;color:#2b1a45">الأكثر طلباً</div>
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <span style="font:700 16px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الذهبية</span>
+                <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">50 نقطة + 125 هدية = 175 نقطة (≈25 مشاهدة)</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <span style="font:800 16px Tajawal,sans-serif;color:#522D8F">500 ر.س</span>
+                <span style="background:#522D8F;border-radius:100px;padding:5px 14px;font:700 11px Tajawal,sans-serif;color:#fff">شراء</span>
+              </div>
+            </div>
+            <div onClick="{{ chooseDiamond }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:18px;padding:16px;cursor:pointer">
+              <div style="display:flex;flex-direction:column;gap:3px">
+                <span style="font:700 16px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الماسية</span>
+                <span style="font:400 12px Tajawal,sans-serif;color:#8a8194">100 نقطة + 250 هدية = 350 نقطة (≈50 مشاهدة)</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
+                <span style="font:800 16px Tajawal,sans-serif;color:#2b1a45">1000 ر.س</span>
+                <span style="background:#F0EAF9;border-radius:100px;padding:5px 14px;font:700 11px Tajawal,sans-serif;color:#522D8F">شراء</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- PURCHASE CONFIRM -->
+      <sc-if value="{{ isPurchaseConfirm }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:30px 24px;text-align:center">
+          <div style="width:64px;height:64px;border-radius:50%;background:#E8F7EE;display:flex;align-items:center;justify-content:center">
+            <svg width="30" height="30" viewBox="0 0 24 24"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM12 18h.01" fill="none" stroke="#1f9d55" stroke-width="1.8" stroke-linecap="round"></path><path d="M8 6h8" stroke="#1f9d55" stroke-width="1.8" stroke-linecap="round"></path></svg>
+          </div>
+          <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">تم إرسال بطاقة الشحن</div>
+          <div style="font:400 13px/1.7 Tajawal,sans-serif;color:#6b6376">أرسلنا رمز شحن الباقة {{ pkgName }} ({{ pkgTotal }} نقطة) على واتساب المسجل لديك</div>
+          <div style="width:100%;background:#fff;border:1px solid #eee9f3;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px">
+            <svg width="26" height="26" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2z" fill="#25D366"></path></svg>
+            <span style="flex:1;text-align:right;font:700 13px Tajawal,sans-serif;color:#2b1a45">بطاقة الشحن — {{ pkgName }} · {{ pkgPrice }} ر.س</span>
+          </div>
+          <div onClick="{{ goRedeem }}" style="width:100%;background:#FFCC00;border-radius:14px;padding:14px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">لدي الرمز الآن</div>
+          <div onClick="{{ goWallet }}" style="width:100%;border:1.5px solid #e4dfec;border-radius:14px;padding:13px;text-align:center;font:700 13px Tajawal,sans-serif;color:#6b6376;cursor:pointer">لاحقاً</div>
+        </div>
+      </sc-if>
+
+      <!-- REDEEM -->
+      <sc-if value="{{ isRedeem }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 4px">
+            <div onClick="{{ goWallet }}" style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #eee9f3;display:flex;align-items:center;justify-content:center;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#2b1a45" stroke-width="2.5" stroke-linecap="round"></path></svg>
+            </div>
+            <span style="font:700 17px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">شحن الرصيد</span>
+          </div>
+          <sc-if value="{{ isRedeemSuccess }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center">
+              <div style="width:60px;height:60px;border-radius:50%;background:#E8F7EE;display:flex;align-items:center;justify-content:center">
+                <svg width="28" height="28" viewBox="0 0 24 24"><path d="M4 12l5 5 11-11" fill="none" stroke="#1f9d55" stroke-width="3" stroke-linecap="round"></path></svg>
+              </div>
+              <div style="font:700 19px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">تم شحن رصيدك</div>
+              <div style="font:400 13px Tajawal,sans-serif;color:#6b6376">أُضيفت {{ pkgTotal }} نقطة (≈{{ pkgTotalViews }} مشاهدة) إلى رصيدك</div>
+              <div onClick="{{ goWallet }}" style="background:#FFCC00;border-radius:14px;padding:13px 40px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">متابعة</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isRedeemInvalid }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center">
+              <div style="width:60px;height:60px;border-radius:50%;background:#FCE9EC;display:flex;align-items:center;justify-content:center">
+                <svg width="28" height="28" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="#c0405c" stroke-width="2.5" stroke-linecap="round"></path></svg>
+              </div>
+              <div style="font:700 19px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الرمز غير صحيح</div>
+              <div style="font:400 13px Tajawal,sans-serif;color:#6b6376">تحقق من الرمز المرسل على واتساب وحاول مرة أخرى</div>
+              <div onClick="{{ retryRedeem }}" style="background:#FFCC00;border-radius:14px;padding:13px 40px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">إعادة المحاولة</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isRedeemUsed }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:24px;text-align:center">
+              <div style="width:60px;height:60px;border-radius:50%;background:#FFF3C2;display:flex;align-items:center;justify-content:center">
+                <svg width="28" height="28" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#a07c00" stroke-width="1.8"></circle><path d="M12 8v4l3 2" fill="none" stroke="#a07c00" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </div>
+              <div style="font:700 19px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">تم استخدام هذا الرمز من قبل</div>
+              <div style="font:400 13px Tajawal,sans-serif;color:#6b6376">كل رمز شحن يُستخدم مرة واحدة فقط</div>
+              <div onClick="{{ retryRedeem }}" style="background:#FFCC00;border-radius:14px;padding:13px 40px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">حسناً</div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ isRedeemForm }}" hint-placeholder-val="{{ true }}">
+            <div style="flex:1;display:flex;flex-direction:column;gap:16px;padding:20px 20px 0">
+              <div style="font:400 13px/1.7 Tajawal,sans-serif;color:#6b6376">أدخل رمز بطاقة الشحن المكوّن من 10 خانات، المُرسَل إليك على واتساب</div>
+              <div style="border:1.5px solid #e4dfec;border-radius:14px;padding:16px;text-align:center;font:800 20px ui-monospace,monospace;letter-spacing:3px;color:#2b1a45">CGVJM-CWL97</div>
+              <div onClick="{{ confirmRedeem }}" style="background:#FFCC00;border-radius:14px;padding:15px;text-align:center;font:800 15px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">تأكيد الشحن</div>
+              <div style="display:flex;gap:16px;justify-content:center;padding-top:6px">
+                <span onClick="{{ showRedeemInvalid }}" style="font:500 11px Tajawal,sans-serif;color:#b5aec0;text-decoration:underline;cursor:pointer">معاينة: رمز غير صالح</span>
+                <span onClick="{{ showRedeemUsed }}" style="font:500 11px Tajawal,sans-serif;color:#b5aec0;text-decoration:underline;cursor:pointer">معاينة: رمز مستخدم</span>
+                <span onClick="{{ goLogin }}" style="font:500 11px Tajawal,sans-serif;color:#b5aec0;text-decoration:underline;cursor:pointer">معاينة: تسجيل الدخول مطلوب</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- INSUFFICIENT CREDITS GATE -->
+      <sc-if value="{{ isInsufficient }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:30px 24px;text-align:center;position:relative">
+          <div onClick="{{ goBooking }}" style="position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;background:#fff;border:1px solid #eee9f3;display:flex;align-items:center;justify-content:center;cursor:pointer">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="#2b1a45" stroke-width="2.2" stroke-linecap="round"></path></svg>
+          </div>
+          <div style="width:64px;height:64px;border-radius:50%;background:#FCE9EC;display:flex;align-items:center;justify-content:center">
+            <svg width="30" height="30" viewBox="0 0 24 24"><path d="M12 8v5M12 16h.01" stroke="#c0405c" stroke-width="2.2" stroke-linecap="round"></path><circle cx="12" cy="12" r="9" fill="none" stroke="#c0405c" stroke-width="1.8"></circle></svg>
+          </div>
+          <div style="font:700 20px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">رصيدك غير كافٍ</div>
+          <div style="font:400 13px/1.7 Tajawal,sans-serif;color:#6b6376">هذا الحجز يحتاج {{ needed }} نقطة، ورصيدك الحالي {{ credits }} نقطة (≈ {{ creditsViews }} مشاهدة) فقط</div>
+          <div style="font:400 11px/1.6 Tajawal,sans-serif;color:#b5aec0">يُخصم حتى ٧ نقاط لكل فيلم (نقطة = دقيقة مشاهدة)، وأول ٣٠ ثانية مجانية دائماً</div>
+          <div onClick="{{ goPackages }}" style="width:100%;background:#FFCC00;border-radius:14px;padding:14px;text-align:center;font:800 14px Tajawal,sans-serif;color:#2b1a45;cursor:pointer">اشحن الآن</div>
+          <div onClick="{{ goRedeem }}" style="width:100%;border:1.5px solid #522D8F;border-radius:14px;padding:13px;text-align:center;font:700 13px Tajawal,sans-serif;color:#522D8F;cursor:pointer">لديّ بطاقة شحن</div>
+        </div>
+      </sc-if>
+
+      <!-- STORE -->
+      <sc-if value="{{ isStore }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="padding:16px 20px 0;font:700 22px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">المتجر</div>
+          <div style="flex:1;overflow:auto;display:flex;flex-direction:column;gap:14px;padding:14px 20px 0">
+            <div onClick="{{ chooseHeadset }}" style="flex:none;display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#522D8F 0%,#3A1D63 100%);border-radius:20px;padding:12px 16px 12px 12px;cursor:pointer;box-shadow:0 10px 26px rgba(82,45,143,0.28)">
+              <img src="./assets/quest3s-headset.png" alt="Meta Quest 3S" style="width:78px;height:78px;object-fit:contain;flex:none">
+              <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+                <span style="font:700 15px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">عرض سماعة Meta Quest 3S</span>
+                <span style="font:400 11px Tajawal,sans-serif;color:rgba(255,255,255,0.7)">يشمل 100 مشاهدة مجانية</span>
+              </div>
+              <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                <span style="font:800 15px Tajawal,sans-serif;color:#FFCC00;white-space:nowrap">2,500 ر.س</span>
+                <span style="font:500 10px Tajawal,sans-serif;color:rgba(255,255,255,0.6)">التفاصيل ›</span>
+              </div>
+            </div>
+
+            <div style="flex:none;display:flex;background:#F0EAF9;border-radius:100px;padding:4px">
+              <span onClick="{{ setCatAll }}" style="flex:1;text-align:center;background:{{ catAllBg }};box-shadow:{{ catAllShadow }};border-radius:100px;padding:7px 0;font:{{ catAllWeight }} 12px Tajawal,sans-serif;color:{{ catAllColor }};cursor:pointer;transition:all .2s">الكل</span>
+              <span onClick="{{ setCatBooks }}" style="flex:1;text-align:center;background:{{ catBooksBg }};box-shadow:{{ catBooksShadow }};border-radius:100px;padding:7px 0;font:{{ catBooksWeight }} 12px Tajawal,sans-serif;color:{{ catBooksColor }};cursor:pointer;transition:all .2s">كتب</span>
+              <span onClick="{{ setCatGifts }}" style="flex:1;text-align:center;background:{{ catGiftsBg }};box-shadow:{{ catGiftsShadow }};border-radius:100px;padding:7px 0;font:{{ catGiftsWeight }} 12px Tajawal,sans-serif;color:{{ catGiftsColor }};cursor:pointer;transition:all .2s">هدايا</span>
+              <span onClick="{{ setCatCards }}" style="flex:1;text-align:center;background:{{ catCardsBg }};box-shadow:{{ catCardsShadow }};border-radius:100px;padding:7px 0;font:{{ catCardsWeight }} 12px Tajawal,sans-serif;color:{{ catCardsColor }};cursor:pointer;transition:all .2s">بطاقات</span>
+              <span onClick="{{ setCatPackages }}" style="flex:1;text-align:center;background:{{ catPackagesBg }};box-shadow:{{ catPackagesShadow }};border-radius:100px;padding:7px 0;font:{{ catPackagesWeight }} 12px Tajawal,sans-serif;color:{{ catPackagesColor }};cursor:pointer;transition:all .2s">النقاط</span>
+            </div>
+
+            <sc-if value="{{ isCatPackages }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div onClick="{{ chooseBronze }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:16px;padding:14px;cursor:pointer">
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font:700 14px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">البرونزية</span>
+                    <span style="font:400 11px Tajawal,sans-serif;color:#8a8194">20 نقطة (≈2 مشاهدة)</span>
+                  </div>
+                  <span style="font:800 14px Tajawal,sans-serif;color:#2b1a45">100 ر.س</span>
+                </div>
+                <div onClick="{{ chooseSilver }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:16px;padding:14px;cursor:pointer">
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font:700 14px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الفضية</span>
+                    <span style="font:400 11px Tajawal,sans-serif;color:#8a8194">60 نقطة (≈8 مشاهدة)</span>
+                  </div>
+                  <span style="font:800 14px Tajawal,sans-serif;color:#2b1a45">250 ر.س</span>
+                </div>
+                <div onClick="{{ chooseGold }}" style="position:relative;display:flex;align-items:center;justify-content:space-between;background:#fff;border:2px solid #522D8F;border-radius:16px;padding:14px;cursor:pointer">
+                  <div style="position:absolute;top:-9px;right:14px;background:#FFCC00;border-radius:100px;padding:2px 9px;font:800 9px Tajawal,sans-serif;color:#2b1a45">الأكثر طلباً</div>
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font:700 14px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الذهبية</span>
+                    <span style="font:400 11px Tajawal,sans-serif;color:#8a8194">175 نقطة (≈25 مشاهدة)</span>
+                  </div>
+                  <span style="font:800 14px Tajawal,sans-serif;color:#522D8F">500 ر.س</span>
+                </div>
+                <div onClick="{{ chooseDiamond }}" style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1.5px solid #e4dfec;border-radius:16px;padding:14px;cursor:pointer">
+                  <div style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font:700 14px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#2b1a45">الماسية</span>
+                    <span style="font:400 11px Tajawal,sans-serif;color:#8a8194">350 نقطة (≈50 مشاهدة)</span>
+                  </div>
+                  <span style="font:800 14px Tajawal,sans-serif;color:#2b1a45">1000 ر.س</span>
+                </div>
+              </div>
+            </sc-if>
+            <sc-if value="{{ showProductGrid }}" hint-placeholder-val="{{ true }}">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <sc-if value="{{ showItemBook1 }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#fff;border:1px solid #eee9f3;border-radius:18px;overflow:hidden">
+                  <div style="position:relative">
+                    <img src="./uploads/IMG_Tent.jpg" alt="" style="width:100%;height:110px;object-fit:cover;display:block">
+                    <span style="position:absolute;bottom:8px;right:8px;background:#fff;border-radius:100px;padding:3px 10px;font:800 11px Tajawal,sans-serif;color:#522D8F;box-shadow:0 2px 6px rgba(0,0,0,0.12)">45 نقطة</span>
+                  </div>
+                  <div style="padding:10px 12px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">كتاب السيرة المصور</span>
+                  </div>
+                </div>
+                </sc-if>
+                <sc-if value="{{ showItemCard }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#fff;border:1px solid #eee9f3;border-radius:18px;overflow:hidden">
+                  <div style="position:relative">
+                    <img src="./uploads/IMG_Ship.jpg" alt="" style="width:100%;height:110px;object-fit:cover;display:block">
+                    <span style="position:absolute;bottom:8px;right:8px;background:#fff;border-radius:100px;padding:3px 10px;font:800 11px Tajawal,sans-serif;color:#522D8F;box-shadow:0 2px 6px rgba(0,0,0,0.12)">60 نقطة</span>
+                  </div>
+                  <div style="padding:10px 12px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">بطاقة إهداء تجربة</span>
+                  </div>
+                </div>
+                </sc-if>
+                <sc-if value="{{ showItemGift }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#fff;border:1px solid #eee9f3;border-radius:18px;overflow:hidden">
+                  <div style="position:relative">
+                    <img src="./uploads/IMG_Desert.jpg" alt="" style="width:100%;height:110px;object-fit:cover;display:block">
+                    <span style="position:absolute;bottom:8px;right:8px;background:#fff;border-radius:100px;padding:3px 10px;font:800 11px Tajawal,sans-serif;color:#522D8F;box-shadow:0 2px 6px rgba(0,0,0,0.12)">80 نقطة</span>
+                  </div>
+                  <div style="padding:10px 12px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">مجسم قافلة تذكاري</span>
+                  </div>
+                </div>
+                </sc-if>
+                <sc-if value="{{ showItemBook2 }}" hint-placeholder-val="{{ true }}">
+                <div style="background:#fff;border:1px solid #eee9f3;border-radius:18px;overflow:hidden">
+                  <div style="position:relative">
+                    <img src="./uploads/IMG_DarAlnadwa.jpg" alt="" style="width:100%;height:110px;object-fit:cover;display:block">
+                    <span style="position:absolute;bottom:8px;right:8px;background:#fff;border-radius:100px;padding:3px 10px;font:800 11px Tajawal,sans-serif;color:#522D8F;box-shadow:0 2px 6px rgba(0,0,0,0.12)">30 نقطة</span>
+                  </div>
+                  <div style="padding:10px 12px">
+                    <span style="font:700 13px Tajawal,sans-serif;color:#2b1a45">كتيب دار الندوة</span>
+                  </div>
+                </div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </div>
+          <div style="display:flex;background:#fff;border-top:1px solid #eee9f3;padding:10px 8px 8px">
+            <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z" fill="none" stroke="{{ navHomeColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navHomeWeight }} 11px Tajawal,sans-serif;color:{{ navHomeColor }}">الرئيسية</span>
+            </div>
+            <div onClick="{{ goTickets }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="{{ navTicketsColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navTicketsWeight }} 11px Tajawal,sans-serif;color:{{ navTicketsColor }}">تذاكري</span>
+            </div>
+            <div onClick="{{ goWallet }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="{{ navWalletColor }}" stroke-width="2"></rect><path d="M15 12h4" stroke="{{ navWalletColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navWalletWeight }} 11px Tajawal,sans-serif;color:{{ navWalletColor }}">المحفظة</span>
+            </div>
+            <div onClick="{{ goStore }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11zM8 8a4 4 0 0 1 8 0" fill="none" stroke="{{ navStoreColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navStoreWeight }} 11px Tajawal,sans-serif;color:{{ navStoreColor }}">المتجر</span>
+            </div>
+            <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></circle><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navProfileWeight }} 11px Tajawal,sans-serif;color:{{ navProfileColor }}">حسابي</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- PROFILE -->
+      <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+        <div style="height:100%;background:#faf8fc;display:flex;flex-direction:column">
+          <div style="background:linear-gradient(135deg,#522D8F 0%,#3A1D63 100%);padding:20px 20px 24px;display:flex;flex-direction:column;align-items:center;gap:10px;border-radius:0 0 28px 28px">
+            <div style="width:72px;height:72px;border-radius:50%;background:#FFCC00;display:flex;align-items:center;justify-content:center;font:800 26px Tajawal,sans-serif;color:#2b1a45">س</div>
+            <span style="font:700 18px 'Baloo Bhaijaan 2',Tajawal,sans-serif;color:#fff">سارة أحمد</span>
+            <span style="font:500 13px Tajawal,sans-serif;color:rgba(255,255,255,0.7)">+966 5xx xxx xxx</span>
+          </div>
+          <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:18px 20px 0">
+            <div style="display:flex;flex-direction:column;background:#fff;border:1px solid #eee9f3;border-radius:16px;overflow:hidden">
+              <div onClick="{{ goTickets }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f2eff7;cursor:pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="#522D8F" stroke-width="1.8"></path></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#2b1a45">تذاكري</span>
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#b5aec0" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+              <div onClick="{{ goWallet }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f2eff7;cursor:pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="#522D8F" stroke-width="1.8"></rect></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#2b1a45">المحفظة</span>
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#b5aec0" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+              <div onClick="{{ goHome }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3-7-7-7z" fill="none" stroke="#522D8F" stroke-width="1.8"></path></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#2b1a45">مواقعنا</span>
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#b5aec0" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;background:#fff;border:1px solid #eee9f3;border-radius:16px;overflow:hidden">
+              <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f2eff7">
+                <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="#522D8F" stroke-width="1.8"></circle></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#2b1a45">اللغة — العربية</span>
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#b5aec0" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+              <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid #f2eff7">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2l9 4v6c0 5-3.5 8.5-9 10-5.5-1.5-9-5-9-10V6z" fill="none" stroke="#522D8F" stroke-width="1.8"></path></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#2b1a45">الدعم والمساعدة</span>
+                <svg width="16" height="16" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#b5aec0" stroke-width="2" stroke-linecap="round"></path></svg>
+              </div>
+              <div onClick="{{ goLogin }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;cursor:pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M15 17l5-5-5-5M20 12H9M12 19H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6" fill="none" stroke="#c0405c" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                <span style="flex:1;font:500 14px Tajawal,sans-serif;color:#c0405c">تسجيل الخروج</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;background:#fff;border-top:1px solid #eee9f3;padding:10px 8px 8px">
+            <div onClick="{{ goHome }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 3l9 8h-3v9h-4v-6h-4v6H6v-9H3z" fill="none" stroke="{{ navHomeColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navHomeWeight }} 11px Tajawal,sans-serif;color:{{ navHomeColor }}">الرئيسية</span>
+            </div>
+            <div onClick="{{ goTickets }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 7h16v4a2 2 0 0 0 0 4v2H4v-2a2 2 0 0 0 0-4z" fill="none" stroke="{{ navTicketsColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navTicketsWeight }} 11px Tajawal,sans-serif;color:{{ navTicketsColor }}">تذاكري</span>
+            </div>
+            <div onClick="{{ goWallet }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3" fill="none" stroke="{{ navWalletColor }}" stroke-width="2"></rect><path d="M15 12h4" stroke="{{ navWalletColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navWalletWeight }} 11px Tajawal,sans-serif;color:{{ navWalletColor }}">المحفظة</span>
+            </div>
+            <div onClick="{{ goStore }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11zM8 8a4 4 0 0 1 8 0" fill="none" stroke="{{ navStoreColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navStoreWeight }} 11px Tajawal,sans-serif;color:{{ navStoreColor }}">المتجر</span>
+            </div>
+            <div onClick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer">
+              <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></circle><path d="M4 20c1.5-3.5 4.5-5 8-5s6.5 1.5 8 5" fill="none" stroke="{{ navProfileColor }}" stroke-width="2"></path></svg>
+              <span style="font:{{ navProfileWeight }} 11px Tajawal,sans-serif;color:{{ navProfileColor }}">حسابي</span>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </x-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  qp = new URLSearchParams(window.location.search);
+  state = {
+    screen: this.qp.get('screen') || 'login',
+    selectedExperience: 'hijra',
+    ticketQty: 2,
+    balance: 250,
+    credits: this.qp.get('credits') ? Number(this.qp.get('credits')) : 1,
+    selectedPackage: 'bronze',
+    redeemState: this.qp.get('redeem') || 'form',
+    selectedDate: 19,
+    selectedTime: '7:00 م',
+    ticketsTab: this.qp.get('tab') || 'upcoming',
+    storeCategory: this.qp.get('cat') || 'all',
+  };
+
+  packages = {
+    headset: { name: 'عرض سماعة Meta Quest 3S', price: 2500, paid: 0, free: 700, total: 700, isHeadset: true },
+    bronze: { name: 'البرونزية', price: 100, paid: 10, free: 10, total: 20 },
+    silver: { name: 'الفضية', price: 250, paid: 20, free: 40, total: 60 },
+    gold: { name: 'الذهبية', price: 500, paid: 50, free: 125, total: 175 },
+    diamond: { name: 'الماسية', price: 1000, paid: 100, free: 250, total: 350 },
+  };
+
+  experiences = {
+    hijra: { title: 'طريق الهجرة', img: './uploads/IMG_HijraWay.jpg', duration: '20 دقيقة', points: 80, tag: 'جميع الأعمار' },
+    gharhira: { title: 'غار حراء', img: './uploads/IMG_GharHira.jpg', duration: '15 دقيقة', points: 60, tag: '+10 سنوات' },
+    desert: { title: 'رحلة الصحراء', img: './uploads/IMG_Desert.jpg', duration: '18 دقيقة', points: 70, tag: 'جميع الأعمار' },
+    tent: { title: 'مضارب البادية', img: './uploads/IMG_Tent.jpg', duration: '12 دقيقة', points: 50, tag: 'جميع الأعمار' },
+    ship: { title: 'رحلة السفينة', img: './uploads/IMG_Ship.jpg', duration: '22 دقيقة', points: 90, tag: '+10 سنوات' },
+    nadwa: { title: 'دار الندوة', img: './uploads/IMG_DarAlnadwa.jpg', duration: '16 دقيقة', points: 65, tag: 'جميع الأعمار' },
+  };
+
+  go(screen) { return () => this.setState({ screen }); }
+  selectExperience(key) {
+    return () => {
+      if (this.drag.moved) { this.drag.moved = false; return; }
+      this.setState({ screen: 'booking', selectedExperience: key });
+    };
+  }
+  incQty = () => this.setState(s => ({ ticketQty: Math.min(6, s.ticketQty + 1) }));
+  decQty = () => this.setState(s => ({ ticketQty: Math.max(1, s.ticketQty - 1) }));
+
+  carouselRef = React.createRef();
+  drag = { isDown: false, startX: 0, scrollLeft: 0, moved: false };
+
+  onCarouselDown = (e) => {
+    const el = this.carouselRef.current;
+    if (!el) return;
+    this.drag.isDown = true;
+    this.drag.moved = false;
+    this.drag.startX = e.pageX;
+    this.drag.scrollLeft = el.scrollLeft;
+  };
+  onCarouselMove = (e) => {
+    if (!this.drag.isDown) return;
+    const el = this.carouselRef.current;
+    if (!el) return;
+    const walk = e.pageX - this.drag.startX;
+    if (Math.abs(walk) > 5) this.drag.moved = true;
+    el.scrollLeft = this.drag.scrollLeft - walk;
+  };
+  onCarouselUp = () => { this.drag.isDown = false; };
+  onCarouselLeave = () => { this.drag.isDown = false; };
+
+  goPackages = () => this.setState({ screen: 'packages' });
+  goRedeem = () => this.setState({ screen: 'redeem', redeemState: 'form' });
+  choosePackage(key) { return () => this.setState({ screen: 'purchaseConfirm', selectedPackage: key }); }
+  confirmRedeem = () => {
+    const pkg = this.packages[this.state.selectedPackage];
+    this.setState(s => ({ credits: s.credits + pkg.total, redeemState: 'success' }));
+  };
+  showRedeemInvalid = () => this.setState({ redeemState: 'invalid' });
+  showRedeemUsed = () => this.setState({ redeemState: 'used' });
+  retryRedeem = () => this.setState({ redeemState: 'form' });
+  pickDate(d) { return () => this.setState({ selectedDate: d }); }
+  pickTime(t) { return () => this.setState({ selectedTime: t }); }
+  setTicketsTab(tab) { return () => this.setState({ ticketsTab: tab }); }
+  setStoreCategory(cat) { return () => this.setState({ storeCategory: cat }); }
+  confirmBooking = () => {
+    const s = this.state;
+    const needed = s.ticketQty * 7; // max 7 points deducted per film watched
+    if (s.credits < needed) { this.setState({ screen: 'insufficient' }); return; }
+    this.setState({ screen: 'ticket' });
+  };
+
+  renderVals() {
+    const s = this.state;
+    const exp = this.experiences[s.selectedExperience];
+    const total = exp.points * s.ticketQty;
+    const navColor = (name) => s.screen === name ? '#522D8F' : '#b5aec0';
+    const navWeight = (name) => s.screen === name ? '700' : '500';
+    return {
+      isLogin: s.screen === 'login',
+      isRegister: s.screen === 'register',
+      isHome: s.screen === 'home',
+      isBooking: s.screen === 'booking',
+      isTicket: s.screen === 'ticket',
+      isTickets: s.screen === 'tickets',
+      isWallet: s.screen === 'wallet',
+      isStore: s.screen === 'store',
+      isProfile: s.screen === 'profile',
+      isPackages: s.screen === 'packages',
+      isRedeem: s.screen === 'redeem',
+      isPurchaseConfirm: s.screen === 'purchaseConfirm',
+      isInsufficient: s.screen === 'insufficient',
+      balance: s.balance,
+      credits: s.credits,
+      creditsViews: Math.floor(s.credits / 7),
+      creditsLow: s.credits <= 2,
+      isRedeemForm: s.redeemState === 'form',
+      isRedeemSuccess: s.redeemState === 'success',
+      isRedeemInvalid: s.redeemState === 'invalid',
+      isRedeemUsed: s.redeemState === 'used',
+      pkgName: this.packages[s.selectedPackage].name,
+      pkgPrice: this.packages[s.selectedPackage].price,
+      pkgPaid: this.packages[s.selectedPackage].paid,
+      pkgFree: this.packages[s.selectedPackage].free,
+      pkgTotal: this.packages[s.selectedPackage].total,
+      pkgTotalViews: Math.floor(this.packages[s.selectedPackage].total / 7),
+      needed: s.ticketQty * 7,
+      goPackages: this.goPackages,
+      goRedeem: this.goRedeem,
+      chooseHeadset: this.choosePackage('headset'),
+      chooseBronze: this.choosePackage('bronze'),
+      chooseSilver: this.choosePackage('silver'),
+      chooseGold: this.choosePackage('gold'),
+      chooseDiamond: this.choosePackage('diamond'),
+      confirmRedeem: this.confirmRedeem,
+      confirmBooking: this.confirmBooking,
+      showRedeemInvalid: this.showRedeemInvalid,
+      showRedeemUsed: this.showRedeemUsed,
+      retryRedeem: this.retryRedeem,
+      pickDate19: this.pickDate(19), pickDate20: this.pickDate(20), pickDate21: this.pickDate(21), pickDate22: this.pickDate(22),
+      date19Bg: s.selectedDate === 19 ? '#522D8F' : '#fff', date19Border: s.selectedDate === 19 ? '#522D8F' : '#e4dfec', date19Color: s.selectedDate === 19 ? '#fff' : '#6b6376',
+      date20Bg: s.selectedDate === 20 ? '#522D8F' : '#fff', date20Border: s.selectedDate === 20 ? '#522D8F' : '#e4dfec', date20Color: s.selectedDate === 20 ? '#fff' : '#6b6376',
+      date21Bg: s.selectedDate === 21 ? '#522D8F' : '#fff', date21Border: s.selectedDate === 21 ? '#522D8F' : '#e4dfec', date21Color: s.selectedDate === 21 ? '#fff' : '#6b6376',
+      date22Bg: s.selectedDate === 22 ? '#522D8F' : '#fff', date22Border: s.selectedDate === 22 ? '#522D8F' : '#e4dfec', date22Color: s.selectedDate === 22 ? '#fff' : '#6b6376',
+      pickTime530: this.pickTime('5:30 م'), pickTime700: this.pickTime('7:00 م'), pickTime830: this.pickTime('8:30 م'),
+      time530Bg: s.selectedTime === '5:30 م' ? '#FFCC00' : '#fff', time530Weight: s.selectedTime === '5:30 م' ? '800' : '500', time530Color: s.selectedTime === '5:30 م' ? '#2b1a45' : '#6b6376',
+      time700Bg: s.selectedTime === '7:00 م' ? '#FFCC00' : '#fff', time700Weight: s.selectedTime === '7:00 م' ? '800' : '500', time700Color: s.selectedTime === '7:00 م' ? '#2b1a45' : '#6b6376',
+      time830Bg: s.selectedTime === '8:30 م' ? '#FFCC00' : '#fff', time830Weight: s.selectedTime === '8:30 م' ? '800' : '500', time830Color: s.selectedTime === '8:30 م' ? '#2b1a45' : '#6b6376',
+      setTicketsUpcoming: this.setTicketsTab('upcoming'), setTicketsPast: this.setTicketsTab('past'),
+      isTicketsUpcoming: s.ticketsTab === 'upcoming', isTicketsPast: s.ticketsTab === 'past',
+      tabUpcomingBg: s.ticketsTab === 'upcoming' ? '#fff' : 'transparent', tabUpcomingShadow: s.ticketsTab === 'upcoming' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', tabUpcomingColor: s.ticketsTab === 'upcoming' ? '#522D8F' : '#8a8194', tabUpcomingWeight: s.ticketsTab === 'upcoming' ? '800' : '500',
+      tabPastBg: s.ticketsTab === 'past' ? '#fff' : 'transparent', tabPastShadow: s.ticketsTab === 'past' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', tabPastColor: s.ticketsTab === 'past' ? '#522D8F' : '#8a8194', tabPastWeight: s.ticketsTab === 'past' ? '800' : '500',
+      setCatAll: this.setStoreCategory('all'), setCatBooks: this.setStoreCategory('books'), setCatGifts: this.setStoreCategory('gifts'), setCatCards: this.setStoreCategory('cards'), setCatPackages: this.setStoreCategory('packages'),
+      isCatPackages: s.storeCategory === 'packages',
+      catPackagesBg: s.storeCategory === 'packages' ? '#fff' : 'transparent', catPackagesShadow: s.storeCategory === 'packages' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', catPackagesColor: s.storeCategory === 'packages' ? '#522D8F' : '#8a8194', catPackagesWeight: s.storeCategory === 'packages' ? '800' : '500',
+      catAllBg: s.storeCategory === 'all' ? '#fff' : 'transparent', catAllShadow: s.storeCategory === 'all' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', catAllColor: s.storeCategory === 'all' ? '#522D8F' : '#8a8194', catAllWeight: s.storeCategory === 'all' ? '800' : '500',
+      catBooksBg: s.storeCategory === 'books' ? '#fff' : 'transparent', catBooksShadow: s.storeCategory === 'books' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', catBooksColor: s.storeCategory === 'books' ? '#522D8F' : '#8a8194', catBooksWeight: s.storeCategory === 'books' ? '800' : '500',
+      catGiftsBg: s.storeCategory === 'gifts' ? '#fff' : 'transparent', catGiftsShadow: s.storeCategory === 'gifts' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', catGiftsColor: s.storeCategory === 'gifts' ? '#522D8F' : '#8a8194', catGiftsWeight: s.storeCategory === 'gifts' ? '800' : '500',
+      catCardsBg: s.storeCategory === 'cards' ? '#fff' : 'transparent', catCardsShadow: s.storeCategory === 'cards' ? '0 2px 6px rgba(82,45,143,0.18)' : 'none', catCardsColor: s.storeCategory === 'cards' ? '#522D8F' : '#8a8194', catCardsWeight: s.storeCategory === 'cards' ? '800' : '500',
+      showItemBook1: (s.storeCategory === 'all' || s.storeCategory === 'books'),
+      showItemCard: (s.storeCategory === 'all' || s.storeCategory === 'cards'),
+      showItemGift: (s.storeCategory === 'all' || s.storeCategory === 'gifts'),
+      showItemBook2: (s.storeCategory === 'all' || s.storeCategory === 'books'),
+      showProductGrid: s.storeCategory !== 'packages',
+      expTitle: exp.title,
+      expImg: exp.img,
+      isExpHijra: s.selectedExperience === 'hijra',
+      isExpGharHira: s.selectedExperience === 'gharhira',
+      isExpDesert: s.selectedExperience === 'desert',
+      isExpTent: s.selectedExperience === 'tent',
+      isExpShip: s.selectedExperience === 'ship',
+      isExpNadwa: s.selectedExperience === 'nadwa',
+      expDuration: exp.duration,
+      expTag: exp.tag,
+      ticketQty: s.ticketQty,
+      total,
+      goLogin: this.go('login'),
+      goRegister: this.go('register'),
+      goHome: this.go('home'),
+      goBooking: this.go('booking'),
+      goTicket: this.go('ticket'),
+      goTickets: this.go('tickets'),
+      goWallet: this.go('wallet'),
+      goStore: this.go('store'),
+      goProfile: this.go('profile'),
+      selectHijra: this.selectExperience('hijra'),
+      selectGharHira: this.selectExperience('gharhira'),
+      selectDesert: this.selectExperience('desert'),
+      selectTent: this.selectExperience('tent'),
+      selectShip: this.selectExperience('ship'),
+      selectNadwa: this.selectExperience('nadwa'),
+      incQty: this.incQty,
+      decQty: this.decQty,
+      carouselRef: this.carouselRef,
+      onCarouselDown: this.onCarouselDown,
+      onCarouselMove: this.onCarouselMove,
+      onCarouselUp: this.onCarouselUp,
+      onCarouselLeave: this.onCarouselLeave,
+      carouselCursor: this.drag.isDown ? 'grabbing' : 'grab',
+      navHomeColor: navColor('home'), navHomeWeight: navWeight('home'),
+      navTicketsColor: navColor('tickets'), navTicketsWeight: navWeight('tickets'),
+      navWalletColor: navColor('wallet'), navWalletWeight: navWeight('wallet'),
+      navStoreColor: navColor('store'), navStoreWeight: navWeight('store'),
+      navProfileColor: navColor('profile'), navProfileWeight: navWeight('profile'),
+    };
+  }
+}
+</script>
+</body>
+</html>
