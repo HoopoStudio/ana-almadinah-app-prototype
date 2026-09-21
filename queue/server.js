@@ -22,7 +22,8 @@ const PORT = Number(process.env.PORT || 3000);
 const STAFF_PIN = process.env.STAFF_PIN || '1234';
 const DATA_FILE = process.env.QUEUE_DATA || path.join(__dirname, 'data', 'queue.json');
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const REPO_ASSETS = path.join(__dirname, '..', 'assets');
+// Logos: a standalone checkout keeps them in public/assets; inside the app prototype repo they live one level up.
+const REPO_ASSETS = fs.existsSync(path.join(PUBLIC_DIR, 'assets')) ? path.join(PUBLIC_DIR, 'assets') : path.join(__dirname, '..', 'assets');
 
 // ---------------------------------------------------------------- state ----
 
