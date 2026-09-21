@@ -23,18 +23,19 @@ all show the same queue at the same moment.
 ## Run it
 
 ```bash
-cd queue
+git clone https://github.com/HoopoStudio/ana-almadinah-queue.git
+cd ana-almadinah-queue
 STAFF_PIN=2468 node server.js          # http://localhost:3000
 ```
 
-The queue is stored in `queue/data/queue.json` (git-ignored). "New day" in the
+The queue is stored in `data/queue.json` (git-ignored). "New day" in the
 settings archives that file and restarts numbering from A-001.
 
 ### Make it reachable by guests' phones
 
 The QR code must point to an address a phone on mobile data can open. Any of these works:
 
-1. **A small cloud host** (Render, Railway, Fly.io, a VPS): deploy the `queue/` folder,
+1. **A small cloud host** (Render, Railway, Fly.io, a VPS): deploy this repository,
    set `PORT` from the host and the `STAFF_PIN` / `ODOO_*` variables. Recommended: it
    survives venue Wi-Fi problems because guests use their own data.
 2. **Same server as the website**: run it behind Nginx on a subdomain such as
@@ -110,10 +111,11 @@ GET  /api/staff/export.csv
 GET  /api/staff/odoo-check
 ```
 
+This app also lives in the `queue/` folder of the app prototype repository (`ana-almadinah-app-prototype`); this repository is the standalone copy for deployment.
+
 ## Files
 
 ```
-queue/
   server.js          HTTP server, queue logic, SSE, staff API
   odoo.js            JSON-RPC client + partner/registration sync
   public/
@@ -122,6 +124,7 @@ queue/
     display.html     TV board
     qr.html          printable poster
     queue.css        shared styles (brand colours from the app prototype)
+    assets/          brand logos
     vendor/qrcode.js qrcode-generator 1.4.4 (MIT), bundled so the poster works offline
   data/              queue.json + daily archives (git-ignored)
 ```
