@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/assets/anaalmadinah-logo-purple.svg" type="image/svg+xml">
+<title>أنا المدينة – ملصق QR</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/queue.css">
+<script src="/static/vendor/qrcode.js"></script>
+<style>
+  .tools{max-width:720px;margin:16px auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:0 16px}
+  .tools .input{flex:1;min-width:240px}
+  .poster{width:210mm;min-height:297mm;margin:0 auto;background:var(--purple-dark);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:22mm 18mm;text-align:center}
+  .poster img{width:120mm}
+  .poster .t{font:800 30pt/1.2 var(--display);margin-top:8mm}
+  .poster .s{font:500 15pt var(--font);color:rgba(255,255,255,.8);margin-top:3mm}
+  .qr{background:#fff;padding:8mm;border-radius:10mm;margin:10mm 0}
+  .qr svg{width:100mm;height:100mm;display:block}
+  .steps{display:flex;gap:10mm;font-size:12pt;color:rgba(255,255,255,.85)}
+  .steps div{flex:1}
+  .steps b{display:block;font:800 26pt var(--display);color:var(--yellow)}
+  .url{font:700 11pt var(--font);color:rgba(255,255,255,.6);direction:ltr;margin-top:8mm}
+  @media print{ .tools{display:none} body{background:#fff} .poster{margin:0} @page{size:A4;margin:0} }
+</style>
+</head>
+<body>
+  <div class="tools">
+    <input class="input" id="url" dir="ltr" placeholder="https://your-public-address/">
+    <button class="btn btn-purple" id="make">تحديث</button>
+    <button class="btn btn-primary" onclick="print()">🖨 طباعة</button>
+    <span class="muted" style="flex-basis:100%">هذا هو الرابط الذي يفتحه الضيف بعد مسح الرمز. غيّره إلى العنوان العام للخادم (Domain / Tunnel) إن كان مختلفاً.</span>
+  </div>
+  <div class="poster">
+    <div>
+      <img src="/assets/anaalmadinah-logo-white.svg" alt="أنا المدينة">
+      <div class="t">امسح الرمز لحجز دورك</div>
+      <div class="s">Scan to join the queue · تابع دورك من جوالك</div>
+    </div>
+    <div class="qr" id="qr"></div>
+    <div class="steps">
+      <div><b>1</b>امسح الرمز بكاميرا الجوال</div>
+      <div><b>2</b>سجّل اسمك ورقم جوالك</div>
+      <div><b>3</b>انتظر إشعار «حان دورك»</div>
+    </div>
+    <div class="url" id="urlText"></div>
+  </div>
+<script>
+const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
+$('#url').value = params.get('url') || localStorage.getItem('q_join_url') || (location.origin + '/?src=poster');
+function make() {
+  const url = $('#url').value.trim(); localStorage.setItem('q_join_url', url);
+  const q = qrcode(0, 'M'); q.addData(url); q.make();
+  $('#qr').innerHTML = q.createSvgTag({ cellSize: 4, margin: 0, scalable: true });
+  $('#urlText').textContent = url;
+}
+$('#make').onclick = make; make();
+</script>
+</body>
+</html>

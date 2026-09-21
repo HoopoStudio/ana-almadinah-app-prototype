@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#522D8F">
+<link rel="icon" href="/assets/anaalmadinah-logo-purple.svg" type="image/svg+xml">
+<title>أنا المدينة – لوحة الطابور</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/queue.css">
+<style>
+  .wrap{max-width:1100px}
+  .bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:10px 0 14px}
+  .bar .sp{flex:1}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 10px}
+  .tabs button{padding:8px 14px;border-radius:999px;font-weight:700;background:#fff;border:1px solid var(--line);color:var(--muted-2)}
+  .tabs button.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+  table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line-2);border-radius:16px;overflow:hidden}
+  th,td{padding:10px 12px;text-align:start;border-bottom:1px solid var(--line-2);vertical-align:middle;font-size:14px}
+  th{font-size:12px;color:var(--muted);font-weight:700;background:var(--lav-2)}
+  tr:last-child td{border-bottom:0}
+  tr.called td{background:var(--yellow-soft)}
+  tr.in_session td{background:var(--green-soft)}
+  tr.prio td:first-child{border-inline-start:4px solid var(--red)}
+  .num{font:800 20px var(--display);color:var(--purple);white-space:nowrap}
+  .acts{display:flex;gap:6px;flex-wrap:wrap}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:4px}
+  .dot-ok{background:var(--green)}.dot-pending{background:var(--yellow)}.dot-error{background:var(--red)}.dot-off{background:var(--line)}
+  .settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:end}
+  .settings .field{margin:0}
+  .modal{position:fixed;inset:0;background:rgba(43,26,69,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:40}
+  .modal .card{width:100%;max-width:400px}
+  @media (max-width:720px){ th:nth-child(3),td:nth-child(3){display:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <img class="logo" src="/assets/anaalmadinah-logo-purple.svg" alt="">
+    <div style="display:flex;gap:8px;align-items:center">
+      <a class="btn btn-sm btn-outline" href="/display" target="_blank">شاشة العرض</a>
+      <a class="btn btn-sm btn-outline" href="/qr" target="_blank">ملصق QR</a>
+      <button class="btn btn-sm btn-ghost" id="logout">خروج</button>
+    </div>
+  </div>
+
+  <div class="grid grid-4" id="stats">
+    <div class="stat"><b id="sWaiting">–</b><span>مجموعات في الانتظار (<span id="sWaitingP">–</span> شخص)</span></div>
+    <div class="stat"><b id="sIn">–</b><span>شخص داخل العرض الآن</span></div>
+    <div class="stat"><b id="sServed">–</b><span>شخص شاهد العرض اليوم</span></div>
+    <div class="stat"><b id="sAvg">–</b><span>متوسط الانتظار (دقيقة)</span></div>
+  </div>
+
+  <div class="bar">
+    <button class="btn btn-primary" id="callNext">📣 نداء التالي</button>
+    <button class="btn btn-outline" id="addWalkup">＋ إضافة ضيف يدوياً</button>
+    <span class="sp"></span>
+    <label class="check" style="align-items:center"><input type="checkbox" id="openToggle"><span>الطابور مفتوح للتسجيل</span></label>
+    <button class="btn btn-sm btn-ghost" id="toggleSettings">⚙︎ الإعدادات</button>
+  </div>
+
+  <div class="card hidden" id="settingsBox" style="margin-bottom:14px">
+    <div class="settings">
+      <div class="field"><label class="label">اسم الفعالية (عربي)</label><input class="input" id="setName"></div>
+      <div class="field"><label class="label">Event name (EN)</label><input class="input" id="setNameEn" dir="ltr"></div>
+      <div class="field"><label class="label">عدد السماعات المتاحة</label><input class="input" id="setHeadsets" type="number" min="1" max="100"></div>
+      <div class="field"><label class="label">مدة الجلسة الواحدة (دقيقة)</label><input class="input" id="setMinutes" type="number" min="1" max="180"></div>
+      <div class="field"><label class="label">بادئة التذكرة</label><input class="input" id="setPrefix" maxlength="3" dir="ltr"></div>
+      <button class="btn btn-purple" id="saveSettings">حفظ</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center">
+      <a class="btn btn-sm btn-outline" id="exportCsv" href="#">⬇ تصدير CSV</a>
+      <button class="btn btn-sm btn-outline" id="odooCheck">فحص اتصال Odoo</button>
+      <button class="btn btn-sm btn-danger" id="resetDay">بدء يوم جديد (تصفير الطابور)</button>
+      <span class="muted" id="odooStatus"></span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button data-f="active" class="on">النشطون</button>
+    <button data-f="waiting">في الانتظار</button>
+    <button data-f="called">تم النداء</button>
+    <button data-f="in_session">داخل العرض</button>
+    <button data-f="finished">المنتهون</button>
+    <button data-f="all">الكل</button>
+  </div>
+
+  <div style="overflow-x:auto">
+  <table>
+    <thead><tr><th>الرقم</th><th>الضيف</th><th>الجوال</th><th>العدد</th><th>الانتظار</th><th>الحالة</th><th>Odoo</th><th>إجراءات</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  </div>
+  <div class="muted" id="empty" style="text-align:center;padding:30px" hidden>لا توجد تذاكر في هذه القائمة</div>
+</div>
+
+<!-- PIN gate -->
+<div class="modal" id="pinModal">
+  <div class="card">
+    <div class="h2">لوحة الموظفين</div>
+    <div class="muted" style="margin-bottom:12px">أدخل رمز الدخول (PIN)</div>
+    <input class="input" id="pinInput" type="password" inputmode="numeric" dir="ltr" autofocus>
+    <div id="pinErr" class="err hidden" style="margin-top:8px">رمز غير صحيح</div>
+    <button class="btn btn-purple btn-block" id="pinBtn" style="margin-top:12px">دخول</button>
+  </div>
+</div>
+
+<!-- Walk-up modal -->
+<div class="modal hidden" id="addModal">
+  <div class="card">
+    <div class="h2" style="margin-bottom:12px">إضافة ضيف يدوياً</div>
+    <div class="field"><label class="label">الاسم</label><input class="input" id="addName"></div>
+    <div class="field"><label class="label">الجوال (اختياري)</label><input class="input" id="addPhone" dir="ltr" inputmode="tel"></div>
+    <div class="field"><label class="label">عدد الأشخاص</label><input class="input" id="addParty" type="number" min="1" max="10" value="1"></div>
+    <div class="field"><label class="check"><input type="checkbox" id="addPrio"><span>أولوية (كبار السن / ذوو الاحتياجات الخاصة / ضيوف VIP)</span></label></div>
+    <div style="display:flex;gap:8px"><button class="btn btn-purple btn-block" id="addSave">إضافة</button><button class="btn btn-ghost" id="addCancel">إلغاء</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+let PIN = sessionStorage.getItem('q_pin') || '';
+let data = null, filter = 'active';
+const STATUS = { waiting:'في الانتظار', called:'تم النداء', in_session:'داخل العرض', done:'انتهى', no_show:'لم يحضر', cancelled:'غادر' };
+const api = async (path, opts = {}) => {
+  const r = await fetch(path, { ...opts, headers: { 'content-type': 'application/json', 'x-staff-pin': PIN, ...(opts.headers || {}) } });
+  if (r.status === 401) { sessionStorage.removeItem('q_pin'); PIN = ''; $('#pinModal').classList.remove('hidden'); $('#pinErr').classList.remove('hidden'); throw new Error('pin'); }
+  return r.json();
+};
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 2200); }
+function mins(from, to) { return Math.max(0, Math.round((new Date(to || Date.now()) - new Date(from)) / 60000)); }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c])); }
+
+async function refresh() {
+  data = await api('/api/staff/queue');
+  const s = data.summary;
+  $('#sWaiting').textContent = s.waitingGroups; $('#sWaitingP').textContent = s.waitingPeople;
+  $('#sIn').textContent = s.inSessionPeople; $('#sServed').textContent = s.servedPeople; $('#sAvg').textContent = s.avgWaitMinutes ?? '–';
+  $('#openToggle').checked = s.open;
+  if (document.activeElement.closest && !document.activeElement.closest('#settingsBox')) {
+    $('#setName').value = data.settings.eventName; $('#setNameEn').value = data.settings.eventNameEn;
+    $('#setHeadsets').value = data.settings.headsets; $('#setMinutes').value = data.settings.sessionMinutes; $('#setPrefix').value = data.settings.ticketPrefix;
+  }
+  $('#exportCsv').href = '/api/staff/export.csv?pin=' + encodeURIComponent(PIN);
+  render();
+}
+function render() {
+  const order = { called: 0, in_session: 1, waiting: 2, done: 3, no_show: 4, cancelled: 5 };
+  let list = data.tickets.slice();
+  if (filter === 'active') list = list.filter(t => ['waiting', 'called', 'in_session'].includes(t.status));
+  else if (filter === 'finished') list = list.filter(t => ['done', 'no_show', 'cancelled'].includes(t.status));
+  else if (filter !== 'all') list = list.filter(t => t.status === filter);
+  list.sort((a, b) => (order[a.status] - order[b.status]) || (a.status === 'waiting' ? a.position - b.position : b.joinedAt.localeCompare(a.joinedAt)));
+  $('#empty').hidden = list.length > 0;
+  $('#rows').innerHTML = list.map(t => {
+    const waited = t.status === 'waiting' ? mins(t.joinedAt) + ' د' : t.calledAt ? mins(t.joinedAt, t.calledAt) + ' د' : '–';
+    const acts = [];
+    if (t.status === 'waiting') acts.push(['call', '📣 نداء', 'btn-primary'], ['priority', t.priority ? '★ إلغاء الأولوية' : '☆ أولوية', 'btn-ghost'], ['cancel', 'إلغاء', 'btn-danger']);
+    if (t.status === 'called') acts.push(['start', '▶ بدء العرض', 'btn-green'], ['no-show', 'لم يحضر', 'btn-danger'], ['requeue', 'إعادة للطابور', 'btn-ghost']);
+    if (t.status === 'in_session') acts.push(['done', '✔ انتهى', 'btn-green']);
+    if (['done', 'no_show', 'cancelled'].includes(t.status)) acts.push(['requeue', 'إعادة للطابور', 'btn-ghost']);
+    const od = t.odooSync === 'ok' ? `<a href="#" title="partner ${t.odooPartnerId} / registration ${t.odooRegistrationId}"><span class="dot dot-ok"></span>متزامن</a>`
+      : t.odooSync === 'pending' ? '<span class="dot dot-pending"></span>جارٍ'
+      : t.odooSync === 'error' ? `<button class="btn btn-sm btn-danger" data-act="sync" data-id="${t.id}" title="${esc(t.odooError)}"><span class="dot dot-error"></span>إعادة</button>`
+      : '<span class="dot dot-off"></span>–';
+    return `<tr class="${t.status}${t.priority ? ' prio' : ''}">
+      <td class="num">${esc(t.number)}${t.status === 'waiting' ? `<div class="muted" style="font-size:11px">#${t.position}</div>` : ''}</td>
+      <td><b>${esc(t.name)}</b>${t.kids ? ' <span title="أطفال أقل من 10">👶</span>' : ''}<div class="muted" style="font-size:12px">${t.lang === 'en' ? 'EN' : 'عربي'}${t.source && t.source !== 'qr' ? ' · ' + esc(t.source) : ''}</div></td>
+      <td dir="ltr" style="text-align:end">${esc(t.phone || '')}</td>
+      <td>${t.party}</td>
+      <td>${waited}</td>
+      <td><span class="pill pill-${t.status}">${STATUS[t.status]}</span></td>
+      <td>${od}</td>
+      <td><div class="acts">${acts.map(([a, l, c]) => `<button class="btn btn-sm ${c}" data-act="${a}" data-id="${t.id}">${l}</button>`).join('')}</div></td>
+    </tr>`;
+  }).join('');
+}
+$('#rows').onclick = async e => {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  if (b.dataset.act === 'cancel' && !confirm('إلغاء هذه التذكرة؟')) return;
+  await api(`/api/staff/ticket/${b.dataset.id}/${b.dataset.act}`, { method: 'POST' }); refresh();
+};
+$('#tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; filter = b.dataset.f; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); render(); };
+$('#callNext').onclick = async () => { const r = await api('/api/staff/call-next', { method: 'POST' }); toast(r.ticket ? 'تم نداء ' + r.ticket.number + ' – ' + r.ticket.name : 'الطابور فارغ'); refresh(); };
+$('#openToggle').onchange = async e => { await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ open: e.target.checked }) }); toast(e.target.checked ? 'الطابور مفتوح' : 'الطابور مغلق'); };
+$('#toggleSettings').onclick = () => $('#settingsBox').classList.toggle('hidden');
+$('#saveSettings').onclick = async () => {
+  await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ eventName: $('#setName').value, eventNameEn: $('#setNameEn').value, headsets: $('#setHeadsets').value, sessionMinutes: $('#setMinutes').value, ticketPrefix: $('#setPrefix').value }) });
+  toast('تم الحفظ'); refresh();
+};
+$('#resetDay').onclick = async () => { if (!confirm('سيتم أرشفة تذاكر اليوم وبدء الترقيم من جديد. متابعة؟')) return; await api('/api/staff/reset', { method: 'POST' }); toast('تم بدء يوم جديد'); refresh(); };
+$('#odooCheck').onclick = async () => {
+  $('#odooStatus').textContent = '…';
+  const r = await api('/api/staff/odoo-check');
+  $('#odooStatus').textContent = !r.enabled ? 'المزامنة مع Odoo غير مفعّلة (اضبط متغيرات ODOO_* في الخادم)' : r.error ? 'خطأ: ' + r.error : `متصل بـ Odoo ${r.serverVersion} · الفعالية: ${r.event ? r.event.name : 'غير محددة (ODOO_EVENT_ID)'}`;
+};
+$('#addWalkup').onclick = () => { $('#addModal').classList.remove('hidden'); $('#addName').focus(); };
+$('#addCancel').onclick = () => $('#addModal').classList.add('hidden');
+$('#addSave').onclick = async () => {
+  await api('/api/staff/add', { method: 'POST', body: JSON.stringify({ name: $('#addName').value, phone: $('#addPhone').value, party: $('#addParty').value, priority: $('#addPrio').checked }) });
+  $('#addModal').classList.add('hidden'); $('#addName').value = ''; $('#addPhone').value = ''; $('#addParty').value = 1; $('#addPrio').checked = false; toast('تمت الإضافة'); refresh();
+};
+$('#logout').onclick = () => { sessionStorage.removeItem('q_pin'); location.reload(); };
+async function tryPin(pin) {
+  PIN = pin;
+  try { await api('/api/staff/queue'); sessionStorage.setItem('q_pin', pin); $('#pinModal').classList.add('hidden'); $('#pinErr').classList.add('hidden'); refresh(); connect(); }
+  catch (_) { $('#pinErr').classList.remove('hidden'); }
+}
+$('#pinBtn').onclick = () => tryPin($('#pinInput').value);
+$('#pinInput').onkeydown = e => { if (e.key === 'Enter') tryPin($('#pinInput').value); };
+let es = null;
+function connect() {
+  if (es) return;
+  es = new EventSource('/api/events');
+  es.addEventListener('update', () => refresh().catch(() => {}));
+  es.onerror = () => { es.close(); es = null; setTimeout(connect, 3000); };
+}
+setInterval(() => { if (data) render(); }, 30000); // keep the "waited x min" column fresh
+if (PIN) tryPin(PIN); else $('#pinModal').classList.remove('hidden');
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/assets/anaalmadinah-logo-purple.svg" type="image/svg+xml">
+<title>أنا المدينة – الآن يُخدم</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/queue.css">
+<style>
+  body{background:var(--purple-dark);color:#fff;min-height:100vh;display:flex;flex-direction:column}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:28px 40px}
+  .top img{height:56px}
+  .top .ev{font:700 26px var(--display)}
+  .main{flex:1;display:grid;grid-template-columns:1.4fr 1fr;gap:32px;padding:0 40px 40px}
+  .panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:32px;padding:32px;display:flex;flex-direction:column;gap:18px}
+  .panel h2{margin:0;font:700 22px var(--display);color:rgba(255,255,255,.7);letter-spacing:.5px}
+  .now{display:flex;flex-wrap:wrap;gap:20px;align-content:flex-start}
+  .now .n{background:var(--yellow);color:var(--ink);border-radius:28px;padding:26px 40px;font:800 96px/1 var(--display);min-width:260px;text-align:center;animation:pop .4s ease}
+  @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+  .next .n{display:flex;justify-content:space-between;align-items:center;font:800 52px/1 var(--display);padding:14px 24px;border-radius:20px;background:rgba(255,255,255,.08)}
+  .next .n small{font:500 20px var(--font);color:rgba(255,255,255,.6)}
+  .foot{display:flex;gap:48px;padding:0 40px 32px;font-size:22px;color:rgba(255,255,255,.75)}
+  .foot b{color:#fff;font:800 34px var(--display);margin-inline-end:8px}
+  .empty{color:rgba(255,255,255,.5);font-size:28px;padding:40px 0}
+  @media (max-width:900px){.main{grid-template-columns:1fr}.now .n{font-size:64px;min-width:0;flex:1}.next .n{font-size:36px}}
+</style>
+</head>
+<body>
+  <div class="top"><img src="/assets/anaalmadinah-logo-white.svg" alt=""><div class="ev" id="ev"></div></div>
+  <div class="main">
+    <div class="panel"><h2>الآن يُخدم · NOW SERVING</h2><div class="now" id="now"></div></div>
+    <div class="panel next"><h2>التالي · UP NEXT</h2><div id="next" style="display:flex;flex-direction:column;gap:12px"></div></div>
+  </div>
+  <div class="foot"><div><b id="wait">–</b>مجموعة في الانتظار</div><div><b id="eta">–</b>دقيقة انتظار تقريباً</div><div id="closed" hidden>⛔ التسجيل مغلق</div></div>
+<script>
+const $ = s => document.querySelector(s);
+let last = '';
+function render(s) {
+  $('#ev').textContent = s.eventName;
+  $('#now').innerHTML = s.nowServing.length ? s.nowServing.map(n => `<div class="n">${n}</div>`).join('') : '<div class="empty">—</div>';
+  $('#next').innerHTML = s.upNext.length ? s.upNext.map(t => `<div class="n"><span>${t.number}</span><small>${t.party} ${t.party === 1 ? 'شخص' : 'أشخاص'}</small></div>`).join('') : '<div class="empty">لا يوجد انتظار</div>';
+  $('#wait').textContent = s.waitingGroups; $('#eta').textContent = s.estimateForNew; $('#closed').hidden = s.open;
+  const key = s.nowServing.join(','); if (key && key !== last) chime(); last = key;
+}
+function chime() { try { const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = 660; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(.25, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + .6); o.start(); o.stop(c.currentTime + .6); } catch (_) {} }
+function connect() { const es = new EventSource('/api/events'); es.addEventListener('update', e => render(JSON.parse(e.data))); es.onerror = () => { es.close(); setTimeout(connect, 3000); }; }
+fetch('/api/summary').then(r => r.json()).then(render); connect();
+</script>
+</body>
+</html>
