@@ -1,0 +1,11 @@
+{
+  "name": "ana-almadinah-queue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QR-code walk-up queue for the Ana Al-Madinah VR screening, with optional Odoo sync",
+  "main": "server.js",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js"
+  }
+}

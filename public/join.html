@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#522D8F">
+<link rel="icon" href="/assets/anaalmadinah-logo-purple.svg" type="image/svg+xml">
+<title>أنا المدينة – طابور الانتظار</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/queue.css">
+<style>
+  .hero{background:var(--purple-dark);color:#fff;border-radius:20px;padding:18px 20px;margin-bottom:14px;display:flex;flex-direction:column;gap:4px}
+  .hero .ev{font:700 17px var(--display)}
+  .hero .sub{color:rgba(255,255,255,.75);font-size:13px}
+  .ticket{background:#fff;border:1px solid var(--line-2);border-radius:24px;padding:24px 20px;text-align:center;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .ticket .lbl{font-size:13px;color:var(--muted);font-weight:700}
+  .turn{background:var(--yellow);border-radius:24px;padding:28px 20px;text-align:center}
+  .turn .t1{font:800 30px/1.2 var(--display);color:var(--ink)}
+  .turn .t2{font-size:15px;color:var(--ink);opacity:.85;margin-top:6px}
+  .row{display:flex;gap:10px}
+  .closed{background:var(--yellow-soft);color:var(--yellow-ink);border-radius:14px;padding:12px 14px;font-weight:700;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <img class="logo" src="/assets/anaalmadinah-logo-purple.svg" alt="أنا المدينة">
+    <div class="lang-toggle"><button data-lang="ar" class="on">عربي</button><button data-lang="en">EN</button></div>
+  </div>
+
+  <div class="hero">
+    <div class="ev" id="evName">…</div>
+    <div class="sub" data-i="heroSub"></div>
+  </div>
+
+  <!-- FORM -->
+  <section id="viewForm" class="card">
+    <div class="h1" data-i="joinTitle"></div>
+    <div class="muted" style="margin:4px 0 16px" id="waitHint"></div>
+    <div id="closedBox" class="closed hidden" data-i="closed"></div>
+    <form id="joinForm" novalidate>
+      <div class="field">
+        <label class="label" for="name" data-i="name"></label>
+        <input class="input" id="name" name="name" autocomplete="name" required maxlength="80" data-ph="namePh">
+      </div>
+      <div class="field">
+        <label class="label" for="phone" data-i="phone"></label>
+        <div class="input-row"><span class="prefix" dir="ltr">+966</span><input class="input" id="phone" name="phone" inputmode="tel" autocomplete="tel-national" dir="ltr" placeholder="5xx xxx xxx" required></div>
+        <div class="muted" style="font-size:12px" data-i="phoneWhy"></div>
+      </div>
+      <div class="field">
+        <label class="label" data-i="party"></label>
+        <div class="stepper"><button type="button" id="minus">−</button><span id="partyVal">1</span><button type="button" id="plus">+</button></div>
+      </div>
+      <div class="field">
+        <label class="label" data-i="langPref"></label>
+        <div class="seg" id="langSeg"><button type="button" data-v="ar" class="on">العربية</button><button type="button" data-v="en">English</button></div>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" id="kids"><span data-i="kids"></span></label>
+      </div>
+      <div class="field">
+        <label class="check"><input type="checkbox" id="consent" checked><span data-i="consent"></span></label>
+      </div>
+      <div id="formErr" class="err hidden"></div>
+      <button class="btn btn-primary btn-block" type="submit" id="submitBtn" data-i="join"></button>
+    </form>
+  </section>
+
+  <!-- TICKET -->
+  <section id="viewTicket" class="hidden">
+    <div id="turnBox" class="turn hidden pulse">
+      <div class="t1" data-i="yourTurn"></div>
+      <div class="t2" data-i="goToDesk"></div>
+    </div>
+    <div class="ticket" style="margin-top:12px">
+      <div class="lbl" data-i="yourNumber"></div>
+      <div class="big-number" id="tNumber">A-000</div>
+      <div id="tName" class="h2"></div>
+      <div id="tStatusLine" class="muted"></div>
+      <div class="grid grid-2" style="width:100%;margin-top:6px">
+        <div class="stat"><b id="tPos">–</b><span data-i="ahead"></span></div>
+        <div class="stat"><b id="tEta">–</b><span data-i="etaMin"></span></div>
+      </div>
+      <div class="muted" style="font-size:12px" data-i="keepOpen"></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn btn-ghost btn-block" id="leaveBtn" data-i="leave"></button>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section id="viewDone" class="hidden">
+    <div class="ticket">
+      <div style="font-size:44px">🎬</div>
+      <div class="h1" data-i="thanks"></div>
+      <div class="muted" data-i="thanksSub"></div>
+      <a class="btn btn-purple btn-block" href="https://ana-almadinahart.com" data-i="visitSite"></a>
+      <button class="btn btn-ghost btn-block" id="againBtn" data-i="again"></button>
+    </div>
+  </section>
+
+  <div class="muted" style="text-align:center;margin-top:20px;font-size:12px" data-i="footer"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const I18N = {
+  ar: {
+    heroSub:'امسح، سجّل، وانتظر دورك من جوالك', joinTitle:'انضم إلى طابور الانتظار', name:'الاسم', namePh:'مثال: سارة أحمد',
+    phone:'رقم الجوال', phoneWhy:'نستخدمه لتحديد دورك ولإرسال تذكير عند اقتراب موعدك.', party:'عدد الأشخاص معك (بمن فيهم أنت)',
+    langPref:'لغة العرض', kids:'معي أطفال أقل من 10 سنوات (سماعات الواقع الافتراضي غير مناسبة لهم)', consent:'أوافق على تلقي أخبار وعروض «أنا المدينة»',
+    join:'احجز مكاني في الطابور', closed:'الطابور مغلق حالياً. تفضل بزيارتنا لاحقاً.', yourNumber:'رقمك في الطابور', ahead:'مجموعات قبلك', etaMin:'دقيقة تقريباً',
+    keepOpen:'أبقِ هذه الصفحة مفتوحة، سنبلغك هنا عندما يحين دورك.', leave:'مغادرة الطابور', yourTurn:'حان دورك!', goToDesk:'تفضل إلى مكتب الاستقبال الآن',
+    thanks:'شكراً لزيارتك!', thanksSub:'نتمنى أن تكون قد استمتعت بتجربة أنا المدينة.', visitSite:'اكتشف المزيد عن أنا المدينة', again:'حجز جديد',
+    footer:'أنا المدينة © تجربة الواقع الافتراضي', waitNow:'وقت الانتظار الحالي حوالي {m} دقيقة · {g} مجموعة في الانتظار', waitNone:'لا يوجد انتظار حالياً 🎉',
+    stWaiting:'في الانتظار', stCalled:'تم نداؤك', stIn:'العرض جارٍ الآن', stDone:'انتهى', stNo:'لم يتم الحضور', stCancel:'غادرت الطابور',
+    errName:'اكتب اسمك من فضلك', errPhone:'رقم الجوال غير صحيح', errClosed:'الطابور مغلق حالياً', errNet:'تعذر الاتصال، حاول مرة أخرى',
+    existing:'لديك حجز قائم بالفعل بهذا الرقم', confirmLeave:'هل تريد مغادرة الطابور؟', turnTitle:'🎬 حان دورك – أنا المدينة',
+  },
+  en: {
+    heroSub:'Scan, register, and wait for your turn from your phone', joinTitle:'Join the queue', name:'Name', namePh:'e.g. Sarah Ahmed',
+    phone:'Mobile number', phoneWhy:'Used to identify your turn and remind you when it is near.', party:'People in your group (including you)',
+    langPref:'Experience language', kids:'I have children under 10 with me (VR headsets are not suitable for them)', consent:'I agree to receive news and offers from Ana Al-Madinah',
+    join:'Reserve my place', closed:'The queue is closed right now. Please come back later.', yourNumber:'Your queue number', ahead:'groups ahead', etaMin:'min approx.',
+    keepOpen:'Keep this page open, we will notify you here when it is your turn.', leave:'Leave the queue', yourTurn:'It is your turn!', goToDesk:'Please come to the reception desk now',
+    thanks:'Thank you for visiting!', thanksSub:'We hope you enjoyed the Ana Al-Madinah experience.', visitSite:'Discover more about Ana Al-Madinah', again:'New booking',
+    footer:'Ana Al-Madinah © VR experience', waitNow:'Current wait about {m} min · {g} groups waiting', waitNone:'No wait right now 🎉',
+    stWaiting:'Waiting', stCalled:'You have been called', stIn:'Session in progress', stDone:'Finished', stNo:'Marked as no-show', stCancel:'You left the queue',
+    errName:'Please enter your name', errPhone:'Invalid mobile number', errClosed:'The queue is closed', errNet:'Connection failed, try again',
+    existing:'You already have an active ticket with this number', confirmLeave:'Leave the queue?', turnTitle:'🎬 Your turn – Ana Al-Madinah',
+  },
+};
+let lang = localStorage.getItem('q_lang') || (navigator.language.startsWith('ar') ? 'ar' : 'en');
+const $ = s => document.querySelector(s);
+const t = (k, v) => (I18N[lang][k] || k).replace(/\{(\w+)\}/g, (_, n) => v && v[n] != null ? v[n] : '');
+function applyLang() {
+  document.documentElement.lang = lang; document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  document.querySelectorAll('[data-i]').forEach(el => el.textContent = t(el.dataset.i));
+  document.querySelectorAll('[data-ph]').forEach(el => el.placeholder = t(el.dataset.ph));
+  document.querySelectorAll('.lang-toggle button').forEach(b => b.classList.toggle('on', b.dataset.lang === lang));
+  document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('on', b.dataset.v === lang));
+  if (summary) renderSummary();
+  if (ticket) renderTicket();
+}
+document.querySelectorAll('.lang-toggle button').forEach(b => b.onclick = () => { lang = b.dataset.lang; localStorage.setItem('q_lang', lang); applyLang(); });
+document.querySelectorAll('#langSeg button').forEach(b => b.onclick = () => { document.querySelectorAll('#langSeg button').forEach(x => x.classList.toggle('on', x === b)); });
+
+let party = 1;
+$('#minus').onclick = () => { party = Math.max(1, party - 1); $('#partyVal').textContent = party; };
+$('#plus').onclick = () => { party = Math.min(10, party + 1); $('#partyVal').textContent = party; };
+
+let summary = null, ticket = null;
+function renderSummary() {
+  $('#evName').textContent = lang === 'ar' ? summary.eventName : (summary.eventNameEn || summary.eventName);
+  $('#waitHint').textContent = summary.waitingGroups ? t('waitNow', { m: summary.estimateForNew, g: summary.waitingGroups }) : t('waitNone');
+  $('#closedBox').classList.toggle('hidden', summary.open);
+  $('#submitBtn').disabled = !summary.open;
+}
+function show(id) { ['viewForm', 'viewTicket', 'viewDone'].forEach(v => $('#' + v).classList.toggle('hidden', v !== id)); }
+let wasCalled = false;
+function renderTicket() {
+  const s = ticket.status;
+  if (s === 'done' || s === 'no_show' || s === 'cancelled') { show('viewDone'); return; }
+  show('viewTicket');
+  $('#tNumber').textContent = ticket.number;
+  $('#tName').textContent = ticket.name + (ticket.party > 1 ? ' · ' + ticket.party + (lang === 'ar' ? ' أشخاص' : ' people') : '');
+  $('#tPos').textContent = s === 'waiting' ? Math.max(0, ticket.position - 1) : 0;
+  $('#tEta').textContent = s === 'waiting' ? ticket.estimateMinutes : 0;
+  $('#tStatusLine').textContent = s === 'waiting' ? t('stWaiting') : s === 'called' ? t('stCalled') : t('stIn');
+  const called = s === 'called' || s === 'in_session';
+  $('#turnBox').classList.toggle('hidden', !called);
+  $('#leaveBtn').classList.toggle('hidden', s !== 'waiting');
+  if (called && !wasCalled) { wasCalled = true; notifyTurn(); }
+  if (!called) wasCalled = false;
+}
+function notifyTurn() {
+  try { navigator.vibrate && navigator.vibrate([300, 120, 300, 120, 600]); } catch (_) {}
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, .25, .5].forEach(d => { const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.value = 880; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(.2, ctx.currentTime + d); g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + d + .2); o.start(ctx.currentTime + d); o.stop(ctx.currentTime + d + .22); });
+  } catch (_) {}
+  if ('Notification' in window && Notification.permission === 'granted') { try { new Notification(t('turnTitle'), { body: t('goToDesk') }); } catch (_) {} }
+  document.title = t('turnTitle');
+}
+
+async function fetchTicket() {
+  const id = localStorage.getItem('q_ticket'); if (!id) return;
+  try {
+    const r = await fetch('/api/ticket/' + id); if (r.status === 404) { localStorage.removeItem('q_ticket'); ticket = null; show('viewForm'); return; }
+    const j = await r.json(); ticket = j.ticket; summary = j.summary; renderSummary(); renderTicket();
+  } catch (_) {}
+}
+async function fetchSummary() { try { summary = await (await fetch('/api/summary')).json(); renderSummary(); } catch (_) {} }
+
+$('#joinForm').onsubmit = async e => {
+  e.preventDefault();
+  const err = $('#formErr'); err.classList.add('hidden');
+  const name = $('#name').value.trim(); let phone = $('#phone').value.replace(/\D/g, '');
+  if (name.length < 2) { err.textContent = t('errName'); err.classList.remove('hidden'); return; }
+  if (/^0?5\d{8}$/.test(phone)) phone = '+966' + phone.replace(/^0/, ''); else if (/^9665\d{8}$/.test(phone)) phone = '+' + phone; else if (phone.length >= 8) phone = '+' + phone;
+  if (!/^\+\d{8,15}$/.test(phone)) { err.textContent = t('errPhone'); err.classList.remove('hidden'); return; }
+  const body = { name, phone, party, lang: $('#langSeg .on').dataset.v, kids: $('#kids').checked, consent: $('#consent').checked, source: new URLSearchParams(location.search).get('src') || 'qr' };
+  $('#submitBtn').disabled = true;
+  try {
+    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {});
+    const r = await fetch('/api/join', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json();
+    if (!r.ok) { err.textContent = j.error === 'closed' ? t('errClosed') : j.error === 'phone' ? t('errPhone') : t('errName'); err.classList.remove('hidden'); return; }
+    ticket = j.ticket; localStorage.setItem('q_ticket', ticket.id); if (j.existing) toast(t('existing'));
+    renderTicket(); window.scrollTo(0, 0);
+  } catch (_) { err.textContent = t('errNet'); err.classList.remove('hidden'); }
+  finally { $('#submitBtn').disabled = false; }
+};
+$('#leaveBtn').onclick = async () => {
+  if (!ticket || !confirm(t('confirmLeave'))) return;
+  await fetch('/api/ticket/' + ticket.id + '/leave', { method: 'POST' }); localStorage.removeItem('q_ticket'); ticket = null; show('viewForm'); fetchSummary();
+};
+$('#againBtn').onclick = () => { localStorage.removeItem('q_ticket'); ticket = null; $('#joinForm').reset(); party = 1; $('#partyVal').textContent = 1; show('viewForm'); fetchSummary(); };
+function toast(msg) { const el = $('#toast'); el.textContent = msg; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 2500); }
+
+// Live updates: the server pushes a summary on every change; we refetch our own ticket.
+function connect() {
+  const es = new EventSource('/api/events');
+  es.addEventListener('update', ev => { summary = JSON.parse(ev.data); renderSummary(); if (ticket) fetchTicket(); });
+  es.onerror = () => { es.close(); setTimeout(connect, 3000); };
+}
+applyLang(); fetchSummary(); fetchTicket(); connect();
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { fetchSummary(); fetchTicket(); } });
+</script>
+</body>
+</html>
