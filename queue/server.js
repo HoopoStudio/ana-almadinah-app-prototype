@@ -34,6 +34,7 @@ const defaultSettings = {
   sessionMinutes: 12,   // length of one screening incl. seating/cleaning
   open: true,           // false = QR page says the queue is closed
   ticketPrefix: 'A',
+  showNames: true,      // show guest names on the big screen next to the number
 };
 
 let state = { settings: { ...defaultSettings }, seq: 0, tickets: [], day: today() };
@@ -113,8 +114,8 @@ function summary() {
     inSessionPeople: inSession.reduce((n, t) => n + t.party, 0),
     servedPeople: done.reduce((n, t) => n + t.party, 0),
     avgWaitMinutes: waits.length ? Math.round(waits.reduce((a, b) => a + b, 0) / waits.length) : null,
-    nowServing: nowServing.map(t => t.number),
-    upNext: waiting.slice(0, 5).map(t => ({ number: t.number, party: t.party })),
+    nowServing: nowServing.map(t => ({ number: t.number, name: state.settings.showNames ? t.name : '' })),
+    upNext: waiting.slice(0, 5).map(t => ({ number: t.number, party: t.party, name: state.settings.showNames ? t.name : '' })),
     estimateForNew: estimateMinutes(waiting.length + 1),
     odoo: odoo.enabled(),
     updatedAt: new Date().toISOString(),
@@ -292,6 +293,7 @@ async function handle(req, res) {
       if (b.headsets != null) s.headsets = Math.min(100, Math.max(1, parseInt(b.headsets, 10) || 1));
       if (b.sessionMinutes != null) s.sessionMinutes = Math.min(180, Math.max(1, parseInt(b.sessionMinutes, 10) || 1));
       if (b.open != null) s.open = Boolean(b.open);
+      if (b.showNames != null) s.showNames = Boolean(b.showNames);
       if (b.ticketPrefix != null) s.ticketPrefix = clean(b.ticketPrefix, 3).toUpperCase() || 'A';
       save(); broadcast();
       return json(res, 200, { settings: s });

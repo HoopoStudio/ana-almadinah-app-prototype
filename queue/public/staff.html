@@ -56,6 +56,7 @@
     <button class="btn btn-outline" id="addWalkup">＋ إضافة ضيف يدوياً</button>
     <span class="sp"></span>
     <label class="check" style="align-items:center"><input type="checkbox" id="openToggle"><span>الطابور مفتوح للتسجيل</span></label>
+    <label class="check" style="align-items:center"><input type="checkbox" id="namesToggle"><span>إظهار الأسماء على الشاشة</span></label>
     <button class="btn btn-sm btn-ghost" id="toggleSettings">⚙︎ الإعدادات</button>
   </div>
 
@@ -137,7 +138,7 @@ async function refresh() {
   const s = data.summary;
   $('#sWaiting').textContent = s.waitingGroups; $('#sWaitingP').textContent = s.waitingPeople;
   $('#sIn').textContent = s.inSessionPeople; $('#sServed').textContent = s.servedPeople; $('#sAvg').textContent = s.avgWaitMinutes ?? '–';
-  $('#openToggle').checked = s.open;
+  $('#openToggle').checked = s.open; $('#namesToggle').checked = data.settings.showNames !== false;
   if (document.activeElement.closest && !document.activeElement.closest('#settingsBox')) {
     $('#setName').value = data.settings.eventName; $('#setNameEn').value = data.settings.eventNameEn;
     $('#setHeadsets').value = data.settings.headsets; $('#setMinutes').value = data.settings.sessionMinutes; $('#setPrefix').value = data.settings.ticketPrefix;
@@ -184,6 +185,7 @@ $('#rows').onclick = async e => {
 $('#tabs').onclick = e => { const b = e.target.closest('button'); if (!b) return; filter = b.dataset.f; document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('on', x === b)); render(); };
 $('#callNext').onclick = async () => { const r = await api('/api/staff/call-next', { method: 'POST' }); toast(r.ticket ? 'تم نداء ' + r.ticket.number + ' – ' + r.ticket.name : 'الطابور فارغ'); refresh(); };
 $('#openToggle').onchange = async e => { await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ open: e.target.checked }) }); toast(e.target.checked ? 'الطابور مفتوح' : 'الطابور مغلق'); };
+$('#namesToggle').onchange = async e => { await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ showNames: e.target.checked }) }); toast(e.target.checked ? 'الأسماء ظاهرة على الشاشة' : 'الأسماء مخفية'); };
 $('#toggleSettings').onclick = () => $('#settingsBox').classList.toggle('hidden');
 $('#saveSettings').onclick = async () => {
   await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ eventName: $('#setName').value, eventNameEn: $('#setNameEn').value, headsets: $('#setHeadsets').value, sessionMinutes: $('#setMinutes').value, ticketPrefix: $('#setPrefix').value }) });

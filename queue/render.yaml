@@ -1,0 +1,29 @@
+# One-click deploy on Render (https://render.com): New → Blueprint → pick this repo.
+# The persistent disk keeps the queue if the service restarts during the event.
+services:
+  - type: web
+    name: ana-almadinah-queue
+    runtime: node
+    plan: starter
+    buildCommand: ""
+    startCommand: node server.js
+    healthCheckPath: /api/summary
+    disk:
+      name: queue-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: QUEUE_DATA
+        value: /data/queue.json
+      - key: STAFF_PIN
+        generateValue: true      # Render makes a random PIN; change it in the dashboard to one your staff can remember
+      - key: ODOO_URL
+        sync: false
+      - key: ODOO_DB
+        sync: false
+      - key: ODOO_USER
+        sync: false
+      - key: ODOO_API_KEY
+        sync: false
+      - key: ODOO_EVENT_ID
+        sync: false

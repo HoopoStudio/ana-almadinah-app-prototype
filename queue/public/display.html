@@ -16,7 +16,8 @@
   .panel{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:32px;padding:32px;display:flex;flex-direction:column;gap:18px}
   .panel h2{margin:0;font:700 22px var(--display);color:rgba(255,255,255,.7);letter-spacing:.5px}
   .now{display:flex;flex-wrap:wrap;gap:20px;align-content:flex-start}
-  .now .n{background:var(--yellow);color:var(--ink);border-radius:28px;padding:26px 40px;font:800 96px/1 var(--display);min-width:260px;text-align:center;animation:pop .4s ease}
+  .now .n{background:var(--yellow);color:var(--ink);border-radius:28px;padding:22px 40px;font:800 96px/1 var(--display);min-width:260px;text-align:center;animation:pop .4s ease}
+  .now .n small{display:block;font:700 30px/1.2 var(--font);margin-top:10px;opacity:.85}
   @keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
   .next .n{display:flex;justify-content:space-between;align-items:center;font:800 52px/1 var(--display);padding:14px 24px;border-radius:20px;background:rgba(255,255,255,.08)}
   .next .n small{font:500 20px var(--font);color:rgba(255,255,255,.6)}
@@ -35,13 +36,14 @@
   <div class="foot"><div><b id="wait">–</b>مجموعة في الانتظار</div><div><b id="eta">–</b>دقيقة انتظار تقريباً</div><div id="closed" hidden>⛔ التسجيل مغلق</div></div>
 <script>
 const $ = s => document.querySelector(s);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 let last = '';
 function render(s) {
   $('#ev').textContent = s.eventName;
-  $('#now').innerHTML = s.nowServing.length ? s.nowServing.map(n => `<div class="n">${n}</div>`).join('') : '<div class="empty">—</div>';
-  $('#next').innerHTML = s.upNext.length ? s.upNext.map(t => `<div class="n"><span>${t.number}</span><small>${t.party} ${t.party === 1 ? 'شخص' : 'أشخاص'}</small></div>`).join('') : '<div class="empty">لا يوجد انتظار</div>';
+  $('#now').innerHTML = s.nowServing.length ? s.nowServing.map(t => `<div class="n">${esc(t.number)}${t.name ? `<small>${esc(t.name)}</small>` : ''}</div>`).join('') : '<div class="empty">—</div>';
+  $('#next').innerHTML = s.upNext.length ? s.upNext.map(t => `<div class="n"><span>${esc(t.number)}</span><small>${t.name ? esc(t.name) + ' · ' : ''}${t.party} ${t.party === 1 ? 'شخص' : 'أشخاص'}</small></div>`).join('') : '<div class="empty">لا يوجد انتظار</div>';
   $('#wait').textContent = s.waitingGroups; $('#eta').textContent = s.estimateForNew; $('#closed').hidden = s.open;
-  const key = s.nowServing.join(','); if (key && key !== last) chime(); last = key;
+  const key = s.nowServing.map(t => t.number).join(','); if (key && key !== last) chime(); last = key;
 }
 function chime() { try { const c = new AudioContext(), o = c.createOscillator(), g = c.createGain(); o.frequency.value = 660; o.connect(g); g.connect(c.destination); g.gain.setValueAtTime(.25, c.currentTime); g.gain.exponentialRampToValueAtTime(.001, c.currentTime + .6); o.start(); o.stop(c.currentTime + .6); } catch (_) {} }
 function connect() { const es = new EventSource('/api/events'); es.addEventListener('update', e => render(JSON.parse(e.data))); es.onerror = () => { es.close(); setTimeout(connect, 3000); }; }
