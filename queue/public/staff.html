@@ -67,10 +67,19 @@
       <div class="field"><label class="label">عدد السماعات المتاحة</label><input class="input" id="setHeadsets" type="number" min="1" max="100"></div>
       <div class="field"><label class="label">مدة الجلسة الواحدة (دقيقة)</label><input class="input" id="setMinutes" type="number" min="1" max="180"></div>
       <div class="field"><label class="label">بادئة التذكرة</label><input class="input" id="setPrefix" maxlength="3" dir="ltr"></div>
-      <button class="btn btn-purple" id="saveSettings">حفظ</button>
+    </div>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:18px;flex-wrap:wrap">
+        <label class="check" style="align-items:center"><input type="checkbox" id="setEmailOnCall"><span>إرسال بريد «حان دورك» (عبر Odoo)</span></label>
+        <label class="check" style="align-items:center"><input type="checkbox" id="setEmailThanks"><span>إرسال بريد شكر بعد العرض</span></label>
+      </div>
+      <div class="field"><label class="label">عنوان رسالة الشكر</label><input class="input" id="setThanksSubject" maxlength="150"></div>
+      <div class="field"><label class="label">نص رسالة الشكر</label><textarea class="input" id="setThanksBody" rows="4" style="resize:vertical"></textarea></div>
+      <div><button class="btn btn-purple" id="saveSettings">حفظ</button></div>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center">
-      <a class="btn btn-sm btn-outline" id="exportCsv" href="#">⬇ تصدير CSV</a>
+      <a class="btn btn-sm btn-outline" id="exportCsv" href="#">⬇ تصدير اليوم CSV</a>
+      <a class="btn btn-sm btn-outline" id="exportGuests" href="#">⬇ كل الضيوف (<span id="guestCount">0</span>)</a>
       <button class="btn btn-sm btn-outline" id="odooCheck">فحص اتصال Odoo</button>
       <button class="btn btn-sm btn-danger" id="resetDay">بدء يوم جديد (تصفير الطابور)</button>
       <span class="muted" id="odooStatus"></span>
@@ -142,7 +151,11 @@ async function refresh() {
   if (document.activeElement.closest && !document.activeElement.closest('#settingsBox')) {
     $('#setName').value = data.settings.eventName; $('#setNameEn').value = data.settings.eventNameEn;
     $('#setHeadsets').value = data.settings.headsets; $('#setMinutes').value = data.settings.sessionMinutes; $('#setPrefix').value = data.settings.ticketPrefix;
+    $('#setEmailOnCall').checked = data.settings.emailOnCall !== false; $('#setEmailThanks').checked = data.settings.emailThanks !== false;
+    $('#setThanksSubject').value = data.settings.thanksSubject || ''; $('#setThanksBody').value = data.settings.thanksBody || '';
   }
+  $('#guestCount').textContent = data.guestCount || 0;
+  $('#exportGuests').href = '/api/staff/guests.csv?pin=' + encodeURIComponent(PIN);
   $('#exportCsv').href = '/api/staff/export.csv?pin=' + encodeURIComponent(PIN);
   render();
 }
@@ -188,7 +201,8 @@ $('#openToggle').onchange = async e => { await api('/api/staff/settings', { meth
 $('#namesToggle').onchange = async e => { await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ showNames: e.target.checked }) }); toast(e.target.checked ? 'الأسماء ظاهرة على الشاشة' : 'الأسماء مخفية'); };
 $('#toggleSettings').onclick = () => $('#settingsBox').classList.toggle('hidden');
 $('#saveSettings').onclick = async () => {
-  await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ eventName: $('#setName').value, eventNameEn: $('#setNameEn').value, headsets: $('#setHeadsets').value, sessionMinutes: $('#setMinutes').value, ticketPrefix: $('#setPrefix').value }) });
+  await api('/api/staff/settings', { method: 'POST', body: JSON.stringify({ eventName: $('#setName').value, eventNameEn: $('#setNameEn').value, headsets: $('#setHeadsets').value, sessionMinutes: $('#setMinutes').value, ticketPrefix: $('#setPrefix').value,
+    emailOnCall: $('#setEmailOnCall').checked, emailThanks: $('#setEmailThanks').checked, thanksSubject: $('#setThanksSubject').value, thanksBody: $('#setThanksBody').value }) });
   toast('تم الحفظ'); refresh();
 };
 $('#resetDay').onclick = async () => { if (!confirm('سيتم أرشفة تذاكر اليوم وبدء الترقيم من جديد. متابعة؟')) return; await api('/api/staff/reset', { method: 'POST' }); toast('تم بدء يوم جديد'); refresh(); };

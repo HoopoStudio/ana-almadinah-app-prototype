@@ -49,6 +49,11 @@
         <div class="muted" style="font-size:12px" data-i="phoneWhy"></div>
       </div>
       <div class="field">
+        <label class="label" for="email" data-i="email"></label>
+        <input class="input" id="email" name="email" type="email" inputmode="email" autocomplete="email" dir="ltr" placeholder="name@email.com" maxlength="120">
+        <div class="muted" style="font-size:12px" data-i="emailWhy"></div>
+      </div>
+      <div class="field">
         <label class="label" data-i="party"></label>
         <div class="stepper"><button type="button" id="minus">−</button><span id="partyVal">1</span><button type="button" id="plus">+</button></div>
       </div>
@@ -108,7 +113,7 @@
 const I18N = {
   ar: {
     heroSub:'امسح، سجّل، وانتظر دورك من جوالك', joinTitle:'انضم إلى طابور الانتظار', name:'الاسم', namePh:'مثال: سارة أحمد',
-    phone:'رقم الجوال', phoneWhy:'نستخدمه لتحديد دورك ولإرسال تذكير عند اقتراب موعدك.', party:'عدد الأشخاص معك (بمن فيهم أنت)',
+    email:'البريد الإلكتروني (اختياري)', emailWhy:'سنرسل لك إشعاراً عند حلول دورك ورسالة شكر بعد التجربة.', phone:'رقم الجوال', phoneWhy:'نستخدمه لتحديد دورك ولإرسال تذكير عند اقتراب موعدك.', party:'عدد الأشخاص معك (بمن فيهم أنت)',
     langPref:'لغة العرض', kids:'معي أطفال أقل من 10 سنوات (سماعات الواقع الافتراضي غير مناسبة لهم)', consent:'أوافق على تلقي أخبار وعروض «أنا المدينة»',
     join:'احجز مكاني في الطابور', closed:'الطابور مغلق حالياً. تفضل بزيارتنا لاحقاً.', yourNumber:'رقمك في الطابور', ahead:'مجموعات قبلك', etaMin:'دقيقة تقريباً',
     keepOpen:'أبقِ هذه الصفحة مفتوحة، سنبلغك هنا عندما يحين دورك.', leave:'مغادرة الطابور', yourTurn:'حان دورك!', goToDesk:'تفضل إلى مكتب الاستقبال الآن',
@@ -120,7 +125,7 @@ const I18N = {
   },
   en: {
     heroSub:'Scan, register, and wait for your turn from your phone', joinTitle:'Join the queue', name:'Name', namePh:'e.g. Sarah Ahmed',
-    phone:'Mobile number', phoneWhy:'Used to identify your turn and remind you when it is near.', party:'People in your group (including you)',
+    email:'Email (optional)', emailWhy:'We will email you when it is your turn and a thank-you after the experience.', phone:'Mobile number', phoneWhy:'Used to identify your turn and remind you when it is near.', party:'People in your group (including you)',
     langPref:'Experience language', kids:'I have children under 10 with me (VR headsets are not suitable for them)', consent:'I agree to receive news and offers from Ana Al-Madinah',
     join:'Reserve my place', closed:'The queue is closed right now. Please come back later.', yourNumber:'Your queue number', ahead:'groups ahead', etaMin:'min approx.',
     keepOpen:'Keep this page open, we will notify you here when it is your turn.', leave:'Leave the queue', yourTurn:'It is your turn!', goToDesk:'Please come to the reception desk now',
@@ -200,7 +205,7 @@ $('#joinForm').onsubmit = async e => {
   if (name.length < 2) { err.textContent = t('errName'); err.classList.remove('hidden'); return; }
   if (/^0?5\d{8}$/.test(phone)) phone = '+966' + phone.replace(/^0/, ''); else if (/^9665\d{8}$/.test(phone)) phone = '+' + phone; else if (phone.length >= 8) phone = '+' + phone;
   if (!/^\+\d{8,15}$/.test(phone)) { err.textContent = t('errPhone'); err.classList.remove('hidden'); return; }
-  const body = { name, phone, party, lang: $('#langSeg .on').dataset.v, kids: $('#kids').checked, consent: $('#consent').checked, source: new URLSearchParams(location.search).get('src') || 'qr' };
+  const body = { name, phone, email: $('#email').value.trim(), party, lang: $('#langSeg .on').dataset.v, kids: $('#kids').checked, consent: $('#consent').checked, source: new URLSearchParams(location.search).get('src') || 'qr' };
   $('#submitBtn').disabled = true;
   try {
     if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission().catch(() => {});

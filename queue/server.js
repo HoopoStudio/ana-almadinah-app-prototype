@@ -35,9 +35,17 @@ const defaultSettings = {
   open: true,           // false = QR page says the queue is closed
   ticketPrefix: 'A',
   showNames: true,      // show guest names on the big screen next to the number
+  emailOnCall: true,    // e-mail "it is your turn" to guests who gave an address (sent through Odoo)
+  emailThanks: true,    // e-mail a thank-you after the screening
+  thanksSubject: 'شكراً لزيارتك أنا المدينة | Thank you for visiting Ana Al-Madinah',
+  thanksBody: 'شكراً لمشاركتك في تجربة أنا المدينة للواقع الافتراضي. نتمنى أن تكون قد استمتعت، ونسعد بلقائك في فعالياتنا القادمة.\n\nThank you for joining the Ana Al-Madinah VR experience. We hope you enjoyed it and look forward to seeing you at our next event.',
 };
 
 let state = { settings: { ...defaultSettings }, seq: 0, tickets: [], day: today() };
+// Permanent guest list (one entry per phone number). It survives "new day" and
+// Odoo being off, so the contacts are never lost.
+const GUESTS_FILE = path.join(path.dirname(DATA_FILE), 'guests.json');
+let guests = {};
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
@@ -46,6 +54,32 @@ function load() {
     const raw = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
     state = { ...state, ...raw, settings: { ...defaultSettings, ...(raw.settings || {}) } };
   } catch (_) { /* first run */ }
+  try { guests = JSON.parse(fs.readFileSync(GUESTS_FILE, 'utf8')); } catch (_) { guests = {}; }
+}
+
+let guestsTimer = null;
+function saveGuests() {
+  clearTimeout(guestsTimer);
+  guestsTimer = setTimeout(() => {
+    fs.mkdirSync(path.dirname(GUESTS_FILE), { recursive: true });
+    const tmp = GUESTS_FILE + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(guests, null, 2));
+    fs.renameSync(tmp, GUESTS_FILE);
+  }, 50);
+}
+
+function rememberGuest(t) {
+  if (!t.phone) return;
+  const g = guests[t.phone] || { phone: t.phone, firstSeen: t.joinedAt, visits: [] };
+  g.name = t.name; g.lang = t.lang;
+  if (t.email) g.email = t.email;
+  if (t.consent) g.consent = true; else if (g.consent == null) g.consent = false;
+  if (t.odooPartnerId) g.odooPartnerId = t.odooPartnerId;
+  const v = g.visits.find(v => v.ticketId === t.id) || (g.visits.push({ ticketId: t.id }), g.visits[g.visits.length - 1]);
+  Object.assign(v, { day: state.day, number: t.number, party: t.party, kids: t.kids, status: t.status, joinedAt: t.joinedAt, finishedAt: t.finishedAt, event: state.settings.eventNameEn || state.settings.eventName });
+  g.lastSeen = t.finishedAt || t.joinedAt;
+  guests[t.phone] = g;
+  saveGuests();
 }
 
 let saveTimer = null;
@@ -135,7 +169,29 @@ function setStatus(ticket, status) {
   if (status === 'waiting') { ticket.calledAt = null; ticket.startedAt = null; ticket.finishedAt = null; }
   save();
   broadcast();
+  rememberGuest(ticket);
   if (['done', 'no_show', 'cancelled'].includes(status)) syncStatusLater(ticket);
+  if (status === 'called' && state.settings.emailOnCall) emailLater(ticket, 'call');
+  if (status === 'done' && state.settings.emailThanks) emailLater(ticket, 'thanks');
+}
+
+// ------------------------------------------------------------- e-mails ----
+
+function emailLater(ticket, kind) {
+  if (!odoo.enabled() || !ticket.email) return;
+  const ar = ticket.lang !== 'en';
+  const esc = v => String(v).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  let subject, html;
+  if (kind === 'call') {
+    subject = ar ? `حان دورك – ${ticket.number} | أنا المدينة` : `It is your turn – ${ticket.number} | Ana Al-Madinah`;
+    html = `<p dir="${ar ? 'rtl' : 'ltr'}">${ar ? `حان دورك الآن، تفضل إلى مكتب الاستقبال. رقمك <b>${ticket.number}</b>.` : `It is your turn now, please come to the reception desk. Your number is <b>${ticket.number}</b>.`}</p>`;
+  } else {
+    subject = state.settings.thanksSubject;
+    html = state.settings.thanksBody.split(/\n{2,}/).map(par => `<p>${esc(par).replace(/\n/g, '<br/>')}</p>`).join('');
+  }
+  odoo.sendMail({ to: ticket.email, subject, html, partnerId: ticket.odooPartnerId })
+    .then(() => { ticket[kind === 'call' ? 'emailCallAt' : 'emailThanksAt'] = new Date().toISOString(); save(); })
+    .catch(err => console.error(`[mail] ${kind} e-mail failed for ${ticket.number}: ${err.message}`));
 }
 
 // ------------------------------------------------------------- Odoo sync ----
@@ -148,6 +204,7 @@ function syncJoinLater(ticket) {
     ticket.odooRegistrationId = registrationId;
     ticket.odooSync = 'ok';
     ticket.odooError = null;
+    rememberGuest(ticket);
   }).catch(err => {
     ticket.odooSync = 'error';
     ticket.odooError = err.message;
@@ -258,6 +315,7 @@ async function handle(req, res) {
     state.tickets.push(ticket);
     save();
     broadcast();
+    rememberGuest(ticket);
     syncJoinLater(ticket);
     return json(res, 201, { ticket: publicTicket(ticket) });
   }
@@ -281,7 +339,7 @@ async function handle(req, res) {
 
     if (req.method === 'GET' && p === '/api/staff/queue') {
       return json(res, 200, {
-        settings: state.settings, summary: summary(),
+        settings: state.settings, summary: summary(), guestCount: Object.keys(guests).length,
         tickets: state.tickets.map(t => ({ ...t, position: positionOf(t) })),
       });
     }
@@ -294,6 +352,10 @@ async function handle(req, res) {
       if (b.sessionMinutes != null) s.sessionMinutes = Math.min(180, Math.max(1, parseInt(b.sessionMinutes, 10) || 1));
       if (b.open != null) s.open = Boolean(b.open);
       if (b.showNames != null) s.showNames = Boolean(b.showNames);
+      if (b.emailOnCall != null) s.emailOnCall = Boolean(b.emailOnCall);
+      if (b.emailThanks != null) s.emailThanks = Boolean(b.emailThanks);
+      if (b.thanksSubject != null) s.thanksSubject = clean(b.thanksSubject, 150) || defaultSettings.thanksSubject;
+      if (b.thanksBody != null) s.thanksBody = String(b.thanksBody).trim().slice(0, 4000) || defaultSettings.thanksBody;
       if (b.ticketPrefix != null) s.ticketPrefix = clean(b.ticketPrefix, 3).toUpperCase() || 'A';
       save(); broadcast();
       return json(res, 200, { settings: s });
@@ -317,6 +379,7 @@ async function handle(req, res) {
         odooSync: 'off', odooPartnerId: null, odooRegistrationId: null, odooError: null,
       };
       state.tickets.push(ticket); save(); broadcast();
+      rememberGuest(ticket);
       if (ticket.phone) syncJoinLater(ticket);
       return json(res, 201, { ticket });
     }
@@ -352,6 +415,15 @@ async function handle(req, res) {
       ].map(csvEscape).join(','));
       res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': `attachment; filename="queue-${state.day}.csv"` });
       return res.end('﻿' + [head.join(','), ...rows].join('\n'));
+    }
+    if (req.method === 'GET' && p === '/api/staff/guests.csv') {
+      const head = ['name', 'phone', 'email', 'lang', 'marketing_consent', 'visits', 'first_seen', 'last_seen', 'last_event', 'last_status', 'odoo_partner_id'];
+      const rows = Object.values(guests).sort((a, b) => (b.lastSeen || '').localeCompare(a.lastSeen || '')).map(g => {
+        const last = g.visits[g.visits.length - 1] || {};
+        return [g.name, g.phone, g.email, g.lang, g.consent ? 1 : 0, g.visits.length, g.firstSeen, g.lastSeen, last.event, last.status, g.odooPartnerId].map(csvEscape).join(',');
+      });
+      res.writeHead(200, { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="guests-all-time.csv"' });
+      return res.end('\ufeff' + [head.join(','), ...rows].join('\n'));
     }
     if (req.method === 'GET' && p === '/api/staff/odoo-check') {
       try { return json(res, 200, await odoo.check()); }

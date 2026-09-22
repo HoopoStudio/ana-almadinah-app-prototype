@@ -23,7 +23,8 @@ all show the same queue at the same moment.
 ## Run it
 
 ```bash
-cd queue
+git clone https://github.com/HoopoStudio/ana-almadinah-queue.git
+cd ana-almadinah-queue
 STAFF_PIN=2468 node server.js          # http://localhost:3000
 ```
 
@@ -34,11 +35,17 @@ settings archives that file and restarts numbering from A-001.
 
 The QR code must point to an address a phone on mobile data can open. Any of these works:
 
-1. **A small cloud host** (Render, Railway, Fly.io, a VPS): deploy the `queue/` folder,
-   set `PORT` from the host and the `STAFF_PIN` / `ODOO_*` variables. Recommended: it
-   survives venue Wi-Fi problems because guests use their own data.
-2. **Same server as the website**: run it behind Nginx on a subdomain such as
-   `queue.ana-almadinahart.com`. Nginx needs `proxy_buffering off;` for `/api/events`.
+1. **Your own server that already runs Odoo** (recommended, no extra cost). See
+   [`deploy/hetzner/README.md`](deploy/hetzner/README.md): one install script sets up
+   Node, a systemd service, and the Nginx site for `queue.ana-almadinahart.com`.
+2. **A small cloud host**. This repo ships a `render.yaml`: on
+   https://render.com choose **New → Blueprint**, pick this repository, and Render
+   builds it with a persistent disk for the queue file. Set `STAFF_PIN` (and the
+   `ODOO_*` variables if you want the sync) in the service's Environment tab. Your
+   public address is then `https://ana-almadinah-queue.onrender.com` (or a custom
+   domain such as `queue.ana-almadinahart.com`). A `Dockerfile` is included for
+   Railway, Fly.io, or any VPS. Guests use their own mobile data, so venue Wi-Fi
+   problems never break the queue.
 3. **Laptop at the venue + a tunnel** (`cloudflared tunnel --url http://localhost:3000`
    or ngrok) for a one-day event. Paste the tunnel URL into the box at the top of `/qr`
    before printing.
@@ -56,6 +63,30 @@ with the input box or `?url=https://…`.
   Any ticket can be put back in the queue.
 - A phone number that already has an active ticket gets the same ticket back instead of a duplicate.
 - Guests can leave the queue from their phone.
+- The big screen shows the guest's name next to the number (staff can switch names off).
+
+## Guest data you keep
+
+Every guest is stored three ways, so nothing is lost:
+
+- **Permanent guest list** in `data/guests.json`: one entry per phone number with name,
+  e-mail, language, marketing consent, and every visit (date, event, ticket number,
+  status). It is never touched by "new day". Staff settings → **كل الضيوف** downloads it as
+  CSV for any mailing tool.
+- **Odoo contact** (when sync is on), tagged **VR Screening Guest** and, if they ticked
+  the box, **Marketing consent**. In Odoo: Contacts → filter by tag, or build an Email
+  Marketing / SMS list on those two tags.
+- **Odoo event attendee** with attended / no-show status and wait time in the chatter.
+
+### E-mails sent automatically (through Odoo, no extra account)
+
+If the guest gave an e-mail address, the queue asks Odoo's outgoing mail server to send:
+
+- **"It is your turn"** the moment staff call the ticket (switch: *إرسال بريد «حان دورك»*).
+- **A thank-you** when staff mark the screening finished (switch: *إرسال بريد شكر*).
+  Subject and text are editable in the staff settings; the default is bilingual.
+
+Both e-mails are logged on the contact in Odoo. Nothing is sent when Odoo sync is off.
 
 ## Odoo integration
 
@@ -104,16 +135,18 @@ GET  /api/staff/queue
 POST /api/staff/call-next
 POST /api/staff/add                   walk-up guest
 POST /api/staff/ticket/:id/{call|start|done|no-show|requeue|cancel|priority|sync}
-POST /api/staff/settings              {eventName, eventNameEn, headsets, sessionMinutes, open, ticketPrefix}
+POST /api/staff/settings              {eventName, eventNameEn, headsets, sessionMinutes, open, ticketPrefix, showNames, emailOnCall, emailThanks, thanksSubject, thanksBody}
 POST /api/staff/reset                 archive today, start numbering again
-GET  /api/staff/export.csv
+GET  /api/staff/export.csv            today's tickets
+GET  /api/staff/guests.csv            all-time guest list
 GET  /api/staff/odoo-check
 ```
+
+This app also lives in the `queue/` folder of the app prototype repository (`ana-almadinah-app-prototype`); this repository is the standalone copy for deployment.
 
 ## Files
 
 ```
-queue/
   server.js          HTTP server, queue logic, SSE, staff API
   odoo.js            JSON-RPC client + partner/registration sync
   public/
@@ -122,6 +155,8 @@ queue/
     display.html     TV board
     qr.html          printable poster
     queue.css        shared styles (brand colours from the app prototype)
+    assets/          brand logos
     vendor/qrcode.js qrcode-generator 1.4.4 (MIT), bundled so the poster works offline
-  data/              queue.json + daily archives (git-ignored)
+  deploy/hetzner/    install script, systemd unit, Nginx site, env example
+  data/              queue.json, guests.json + daily archives (git-ignored)
 ```

@@ -66,6 +66,17 @@ function normalisePhone(phone) {
   return p;
 }
 
+const tagCache = {};
+async function tagId(name) {
+  if (tagCache[name]) return tagCache[name];
+  const rows = await execute('res.partner.category', 'search_read', [[['name', '=', name]]], { fields: ['id'], limit: 1 });
+  tagCache[name] = rows.length ? rows[0].id : await execute('res.partner.category', 'create', [{ name }]);
+  return tagCache[name];
+}
+
+const TAG_GUEST = 'VR Screening Guest';
+const TAG_CONSENT = 'Marketing consent';
+
 async function upsertPartner(guest) {
   const phone = normalisePhone(guest.phone);
   const fields = ['id', 'name', 'email'];
@@ -83,13 +94,18 @@ async function upsertPartner(guest) {
     comment: 'Ana Al-Madinah VR screening queue guest',
   };
   if (guest.email) values.email = guest.email;
+  // Tags make the guests easy to find later: Contacts → filter by tag, or an
+  // Email Marketing list on "VR Screening Guest" + "Marketing consent".
+  const tags = [await tagId(TAG_GUEST)];
+  if (guest.consent) tags.push(await tagId(TAG_CONSENT));
   if (found.length) {
-    // Keep what is in Odoo, only fill in blanks.
-    const patch = {};
+    // Keep what is in Odoo, only fill in blanks and add tags.
+    const patch = { category_id: tags.map(id => [4, id]) };
     if (!found[0].email && guest.email) patch.email = guest.email;
-    if (Object.keys(patch).length) await execute('res.partner', 'write', [[found[0].id], patch]);
+    await execute('res.partner', 'write', [[found[0].id], patch]);
     return found[0].id;
   }
+  values.category_id = tags.map(id => [4, id]);
   try {
     return await execute('res.partner', 'create', [values]);
   } catch (err) {
@@ -99,6 +115,16 @@ async function upsertPartner(guest) {
     }
     throw err;
   }
+}
+
+// Send an e-mail through Odoo's configured outgoing mail server (no SMTP
+// credentials needed here). The mail is logged on the contact in Odoo.
+async function sendMail({ to, subject, html, partnerId }) {
+  const values = { subject, body_html: html, email_to: to, auto_delete: false };
+  if (partnerId) { values.model = 'res.partner'; values.res_id = partnerId; }
+  const id = await execute('mail.mail', 'create', [values]);
+  await execute('mail.mail', 'send', [[id]]);
+  return id;
 }
 
 async function createRegistration(ticket, partnerId) {
@@ -163,4 +189,4 @@ async function check() {
   return { enabled: true, serverVersion: version.server_version, uid, event };
 }
 
-module.exports = { enabled, syncJoin, syncStatus, check, normalisePhone, ODOO_EVENT_ID };
+module.exports = { enabled, syncJoin, syncStatus, sendMail, check, normalisePhone, ODOO_EVENT_ID };
